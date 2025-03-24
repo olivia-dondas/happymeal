@@ -1,4 +1,4 @@
-# Happy Meal - Venez comme vous êtes...
+# Happy Meal
 
 ## Introduction
 Happy Meal est une application web qui simplifie la cuisine en proposant des recettes variées, la gestion des listes de courses et la planification des repas de la semaine. L'application fonctionne sans base de données et s'appuie sur un fichier JSON pour stocker les recettes.
