@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://use.typekit.net/lqe4gxu.css");
 
 body {
   font-family: "Lato", sans-serif;
@@ -6,14 +7,37 @@ body {
   font-style: normal;
 }
 
-.logo-header {
-  max-width: 100px; /* Réduit la largeur du logo */
-  height: auto; /* Garde les proportions */
-  display: block; /* Évite les comportements inattendus */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
 }
 
-.header {
+.header-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+.logo-header {
+  width: 80px; /* Taille plus appropriée */
+  height: auto;
+}
+
+.header h1 {
+  font-family: "westgate", sans-serif;
+  font-weight: 400;
+  font-size: 2rem; /* Taille ajustée */
+  color: #db6327;
+  margin: 0;
+  line-height: 1;
+}
+
+.header h2 {
   font-family: "Lato", sans-serif;
-  font-weight: 300;
-  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem; /* Taille ajustée */
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px; /* Pour mieux voir les points */
 }
