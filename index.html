@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Meal - Click. Cook. Eat</title>
+    <title>CookIt - Click. Cook. Eat</title>
     <link rel="stylesheet" href="styles/global.css" />
     <script type="module" src="index.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
@@ -22,11 +22,13 @@
   <body>
     <header class="header bg-dark p-3">
         <div class="d-flex align-items-center">
-        <img class="logo-header" src="assets/Logos_CookIt/Logo_CookIt-1-CookIt_Color.png"/>
-      <h1 class="text-light ms-3">CookIt - Click. Cook. Eat</h1>
+          <img class="logo-header" src="assets/Logos_CookIt/Logo_CookIt-1-CookIt-Color.png" alt="CookIt Logo"/>
+          <div class="header-content ms-3">
+       
+            <h2>CLICK • COOK • EAT</h2>
+          </div>
         </div>
-    </header>
-
+      </header>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
            
@@ -54,6 +56,7 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <div class="container">
                                 <div class="row my-4">
+                                    <!-- Première colonne -->
                                     <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
                                         <div class="list-group list-group-flush">
                                             <p class="mb-0 list-group-item text-uppercase fw-bold">
@@ -65,18 +68,21 @@
                                             <a href="#" class="list-group-item list-group-item-action">Adipisicing elit</a>
                                         </div>
                                     </div>
-                                
-                                    <!-- Ajoutez les autres colonnes ici -->
-
-                                    <div class="list-group list-group-flush">
-                                        <p class="mb-0 list-group-item text-uppercase fw-bold">
-                                            Mes recettes favorites
-                                        </p>
-                                        <a href="#" class="list-group-item list-group-item-action">Dolor sit</a>
-                                        <a href="#" class="list-group-item list-group-item-action">Amet consectetur</a>
-                                        <a href="#" class="list-group-item list-group-item-action">Cras justo odio</a>
-                                        <a href="#" class="list-group-item list-group-item-action">Adipisicing elit</a>
+                                    
+                                    <!-- Deuxième colonne -->
+                                    <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
+                                        <div class="list-group list-group-flush">
+                                            <p class="mb-0 list-group-item text-uppercase fw-bold">
+                                                Mes recettes favorites
+                                            </p>
+                                            <a href="#" class="list-group-item list-group-item-action">Dolor sit</a>
+                                            <a href="#" class="list-group-item list-group-item-action">Amet consectetur</a>
+                                            <a href="#" class="list-group-item list-group-item-action">Cras justo odio</a>
+                                            <a href="#" class="list-group-item list-group-item-action">Adipisicing elit</a>
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Vous pouvez ajouter d'autres colonnes ici si besoin -->
                                 </div>
                             </div>
                         </ul>
@@ -94,13 +100,64 @@
         </div>
     </nav>
     <main class="main">
+
+        <div="container">
+            <div class="video">
+                <div class="col-lg-12">
+                    <video class="videocookit" width="100%" height="auto" autoplay loop muted src="assets/video-homapage.mp4" ></video>
+                </div>
+            </div>
      
+<div class="container d-flex gap-3">
 
+    <div class="card col-lg-4">
+        <img src="assets/img_recipes/poulet.png" class="card-img-top" alt="Recette 1">
 
+        <div class=" card-body"> 
+            <h5 class="card-title">Titre de la recette</h5>
+            <p class="card-text">Texte de la recette</p>
+            <a href="#" class="btn btn-primary">Voir plus</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+        </div> 
+         
+   
+    </div>
+
+    <div class="card col-lg-4">
+        <img src="assets/img_recipes/ratatouille.png" class="card-img-top" alt="Recette 2">
+
+        <div class="card-body"> 
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">Texte de la recette</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+        </div> 
+         
+   
+    </div>
+
+    <div class="card col-lg-4">
+
+<img src="assets/img_recipes/tarte.png" class="card-img-top" alt="Recette 3">
+        <div class="card-body"> 
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">Texte de la recette</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+        </div> 
+         
+   
+    </div>
 
     </main>
     <footer class="footer fixed-bottom bg-dark">
-      <p class="text-light text-center">&copy; 2023 Happy Meal. Tous droits reservés.</p>
+      <p class="text-light text-center">&copy; 2023 CookIt. Tous droits reservés.</p>
     </footer>
   </body>
 </html>
