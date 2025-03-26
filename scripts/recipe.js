@@ -1,62 +1,73 @@
-const images = [
-  "assets/quinoa.png",
-  "assets/lentille.png",
-  "assets/cesard.png",
-  "assets/nicoise.png",
-  "assets/poulet.png",
-  "assets/lasagne.png",
-  "assets/carbo.png",
-  "assets/risoto.png",
-  "assets/ti.png",
-  "assets/saladefruit.png",
-  "assets/muffin.png",
-  "assets/tarte.png",
-  "assets/pomme.png",
-];
+$(document)
+  .ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const nomRecette = decodeURIComponent(urlParams.get("nom"));
 
-const imagesPerPage = 4;
-let currentPage = 1;
+    fetch("../data/data.json")
+      .then((response) => response.json())
+      .then((data) => {
+        const recette = data.recettes.find((r) => r.nom === nomRecette);
 
-function displayImages() {
-  const photoContainer = document.getElementById("photo-container");
-  photoContainer.innerHTML = "";
+        if (recette) {
+          // Afficher les détails de la recette
+          $("#titre-recette").text(recette.nom);
+          $("#categorie-recette").text(recette.categorie);
+          $("#temps-preparation").text(recette.temps_preparation);
 
-  const startIndex = (currentPage - 1) * imagesPerPage;
-  const endIndex = startIndex + imagesPerPage;
-  const imagesToDisplay = images.slice(startIndex, endIndex);
+          // Afficher les ingrédients
+          const $ingredientsList = $("#ingredients-list");
+          recette.ingredients.forEach((ingredient) => {
+            const text =
+              typeof ingredient === "string"
+                ? ingredient
+                : `${ingredient.nom} - ${ingredient.quantite}`;
+            $ingredientsList.append($("<li>").text(text));
+          });
 
-  imagesToDisplay.forEach((src) => {
-    const img = document.createElement("img");
-    img.src = src;
-    img.width = 200;
-    img.height = 200;
-    img.style.borderRadius = "20%";
-    photoContainer.appendChild(img);
+          // Afficher les étapes
+          const $etapesList = $("#etapes-list");
+          recette.etapes.forEach((etape, index) => {
+            $etapesList.append(
+              $("<li>").html(`<strong>Étape ${index + 1}:</strong> ${etape}`)
+            );
+          });
+        } else {
+          $("#recette-content").html(
+            "<p class='text-danger'>Recette non trouvée</p>"
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur de chargement:", error);
+        $("#recette-content").html(
+          "<p class='text-danger'>Erreur de chargement de la recette</p>"
+        );
+      });
+
+    // Titre de la section
+    $recipeList.append(
+      $("<p>")
+        .addClass("mb-0 list-group-item text-uppercase fw-bold")
+        .text("Toutes les recettes")
+    );
+
+    // Vérification et affichage des recettes
+    if (data.recettes && Array.isArray(data.recettes)) {
+      data.recettes.forEach((recette) => {
+        $recipeList.append(
+          $("<a>")
+            .addClass("list-group-item list-group-item-action")
+            .attr(
+              "href",
+              `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
+            )
+            .text(recette.nom)
+        );
+      });
+    } else {
+      console.error("Format JSON invalide.");
+    }
+  })
+  .catch((error) => {
+    console.error("Erreur lors de la récupération des recettes:", error);
   });
-}
-
-function updatePaginationButtons() {
-  document.getElementById("prev-btn").disabled = currentPage === 1;
-  document.getElementById("next-btn").disabled =
-    currentPage === Math.ceil(images.length / imagesPerPage);
-}
-
-document.getElementById("prev-btn").addEventListener("click", () => {
-  if (currentPage > 1) {
-    currentPage--;
-    displayImages();
-    updatePaginationButtons();
-  }
-});
-
-document.getElementById("next-btn").addEventListener("click", () => {
-  if (currentPage < Math.ceil(images.length / imagesPerPage)) {
-    currentPage++;
-    displayImages();
-    updatePaginationButtons();
-  }
-});
-
-// Initialisation
-displayImages();
-updatePaginationButtons();
