@@ -1,7 +1,9 @@
+
 $(document)
   .ready(function () {
     const urlParams = new URLSearchParams(window.location.search);
     const nomRecette = decodeURIComponent(urlParams.get("nom"));
+
 
     fetch("../data/data.json")
       .then((response) => response.json())
