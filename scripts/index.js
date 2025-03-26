@@ -1,26 +1,86 @@
 $(document).ready(function () {
-  // Chargement du fichier JSON local
-  fetch("data/data.json") // Assure-toi que le fichier 'data.json' est dans le même répertoire que ton fichier HTML
+  // Chargement des recettes pour le menu déroulant
+  fetch("data/data.json")
     .then((response) => response.json())
     .then((data) => {
-      const $recipeList = $("#recipe"); // Sélectionne l'élément où les recettes seront ajoutées
+      const $recipeList = $("#recipes-list");
+      $recipeList.empty(); // Vide le contenu existant
 
-      // Crée un élément de titre pour les recettes
-      const title = $("<p>")
-        .addClass("mb-0 list-group-item text-uppercase fw-bold")
-        .text("Toutes les recettes");
-      $recipeList.append(title); // Ajoute le titre "Toutes les recettes"
+      // Titre de la section
+      $recipeList.append(
+        $("<p>")
+          .addClass("mb-0 list-group-item text-uppercase fw-bold")
+          .text("Toutes les recettes")
+      );
 
-      // Boucle sur les recettes et ajoute chaque recette comme un lien cliquable
-      data.recettes.forEach((recette) => {
-        const $link = $("<a>")
-          .addClass("list-group-item list-group-item-action")
-          .attr("href", "#") // Tu peux mettre un lien réel ici si nécessaire
-          .text(recette.nom); // Affiche le nom de la recette
-        $recipeList.append($link); // Ajoute chaque recette à la liste
-      });
+      // Vérification et affichage des recettes
+      if (data.recettes && Array.isArray(data.recettes)) {
+        data.recettes.forEach((recette) => {
+          $recipeList.append(
+            $("<a>")
+              .addClass("list-group-item list-group-item-action no-border")
+              .attr(
+                "href",
+                `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
+              )
+              .text(recette.nom)
+          );
+        });
+      } else {
+        console.error("Format JSON invalide.");
+      }
     })
     .catch((error) => {
       console.error("Erreur lors de la récupération des recettes:", error);
     });
+
+  // Affichage des recettes aléatoires sur la page d'accueil
+  afficherRecettesAleatoires();
 });
+
+async function chargerRecettes() {
+  try {
+    const response = await fetch("data/data.json");
+    const data = await response.json();
+    return data.recettes || [];
+  } catch (error) {
+    console.error("Erreur de chargement des recettes :", error);
+    return [];
+  }
+}
+
+function melangerTableau(tableau) {
+  return tableau.sort(() => Math.random() - 0.5);
+}
+
+async function afficherRecettesAleatoires() {
+  const recettes = await chargerRecettes();
+  const recettesSelectionnees = melangerTableau([...recettes]).slice(0, 3);
+  const container = $("#cartes-recettes");
+
+  container.empty(); // Vide le conteneur
+
+  recettesSelectionnees.forEach((recette) => {
+    const card = `
+      <div class="card" style="width: 18rem;">
+        <div class="card-header bg-transparent">
+          <span class="badge bg-secondary">${recette.categorie}</span>
+          <span class="badge bg-light text-dark ms-2">${
+            recette.temps_preparation
+          }</span>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">${recette.nom}</h5>
+          <p class="card-text">${recette.ingredients
+            .slice(0, 3)
+            .map((i) => i.nom || i)
+            .join(", ")}...</p>
+          <a href="pages/recipe.html?nom=${encodeURIComponent(
+            recette.nom
+          )}" class="btn btn-primary">Voir la recette</a>
+        </div>
+      </div>
+    `;
+    container.append(card);
+  });
+}
