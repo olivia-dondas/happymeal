@@ -71,6 +71,7 @@ async function afficherRecettesAleatoires() {
           }</span>
         </div>
         <div class="card-body">
+         <img src="${recette.images}" class="card-img-top" alt="${recette.nom}">
           <h5 class="card-title">${recette.nom}</h5>
           <p class="card-text">${recette.ingredients
             .slice(0, 3)
@@ -85,3 +86,29 @@ async function afficherRecettesAleatoires() {
     container.append(card);
   });
 }
+
+async function fetchData() {
+  const response = await fetch("data/data.json");
+  return response.json();
+}
+
+document.getElementById("search").addEventListener("input", async function () {
+  const query = this.value.toLowerCase();
+  const suggestionsBox = document.getElementById("suggestions");
+  suggestionsBox.innerHTML = "";
+
+  if (query.length === 0) return;
+
+  const data = await fetchData();
+  const filtered = data.filter((item) => item.toLowerCase().includes(query));
+
+  filtered.forEach((item) => {
+    let div = document.createElement("div");
+    div.textContent = item;
+    div.addEventListener("click", function () {
+      document.getElementById("search").value = item;
+      suggestionsBox.innerHTML = "";
+    });
+    suggestionsBox.appendChild(div);
+  });
+});
