@@ -101,6 +101,23 @@ h3 {
   color: #db6327;
 }
 
-.no-border {
-  border: none;
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #ddd;
+  background: white;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 100%;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+}
+.autocomplete-items div:hover {
+  background: #f1f1f1;
 }
