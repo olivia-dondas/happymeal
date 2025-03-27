@@ -37,6 +37,9 @@ $(document).ready(function () {
 
   // Affichage des recettes aléatoires sur la page d'accueil
   afficherRecettesAleatoires();
+
+  // Barre de recherche avec suggestions
+  gererRecherche();
 });
 
 async function chargerRecettes() {
@@ -87,28 +90,49 @@ async function afficherRecettesAleatoires() {
   });
 }
 
-async function fetchData() {
-  const response = await fetch("data/data.json");
-  return response.json();
-}
+// Fonction pour gérer la recherche et les suggestions
+async function gererRecherche() {
+  const searchInput = document.getElementById("search");
+  const suggestionsBox = document.getElementById("suggestions"); // Correction ici
 
-document.getElementById("search").addEventListener("input", async function () {
-  const query = this.value.toLowerCase();
-  const suggestionsBox = document.getElementById("suggestions");
-  suggestionsBox.innerHTML = "";
+  if (!searchInput || !suggestionsBox) {
+    console.error(
+      "Les éléments de recherche ou de suggestions sont introuvables."
+    );
+    return;
+  }
 
-  if (query.length === 0) return;
+  async function fetchData() {
+    try {
+      const response = await fetch("data/data.json");
+      const data = await response.json();
+      return data.recettes || []; // Assurez-vous de retourner le tableau des recettes
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+      return [];
+    }
+  }
 
-  const data = await fetchData();
-  const filtered = data.filter((item) => item.toLowerCase().includes(query));
+  searchInput.addEventListener("input", async function () {
+    const query = this.value.toLowerCase();
+    suggestionsBox.innerHTML = ""; // Vide les suggestions précédentes
 
-  filtered.forEach((item) => {
-    let div = document.createElement("div");
-    div.textContent = item;
-    div.addEventListener("click", function () {
-      document.getElementById("search").value = item;
-      suggestionsBox.innerHTML = "";
+    if (query.length === 0) return;
+
+    const recettes = await fetchData();
+    const filteredRecettes = recettes.filter((recette) =>
+      recette.nom.toLowerCase().includes(query)
+    );
+
+    filteredRecettes.forEach((recette) => {
+      let div = document.createElement("div");
+      div.textContent = recette.nom;
+      div.style.cursor = "pointer"; // Style pour indiquer que c'est cliquable
+      div.addEventListener("click", function () {
+        searchInput.value = recette.nom; // Remplit le champ de recherche
+        suggestionsBox.innerHTML = ""; // Efface les suggestions
+      });
+      suggestionsBox.appendChild(div);
     });
-    suggestionsBox.appendChild(div);
   });
-});
+}
