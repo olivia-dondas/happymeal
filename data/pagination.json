@@ -1,0 +1,68 @@
+{
+  "recipes": [
+    {
+      "title": "Salade de quinoa",
+      "image": "../assets/img_recipes/quinoa.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Soupe de lentilles",
+      "image": "../assets/img_recipes/lentille.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Salade César",
+      "image": "../assets/img_recipes/cesard.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Salade niçoise",
+      "image": "../assets/img_recipes/nicoise.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Poulet rôti aux herbes",
+      "image": "../assets/img_recipes/poulet.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Pâtes Carbonara",
+      "image": "../assets/img_recipes/carbo.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Risotto aux champignons",
+      "image": "../assets/img_recipes/risoto.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Lasagnes végétariennes",
+      "image": "../assets/img_recipes/lasagne.png",
+      "buttonText": "voir plus"
+    } ,
+
+
+    {
+      "title": "Tiramisu",
+      "image": "../assets/img_recipes/ti.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Tarte aux pommes",
+      "image": "../assets/img_recipes/tarte.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Salade de fruits frais",
+      "image": "../assets/img_recipes/saladefruit.png",
+      "buttonText": "voir plus"
+    },
+    {
+      "title": "Muffins aux myrtilles",
+      "image": "../assets/img_recipes/muffin.png",
+      "buttonText": "voir plus"
+    }
+    
+    
+  ]
+}
