@@ -11,7 +11,7 @@ function afficherFavoris() {
     return;
   }
 
-  favoris.forEach(favori => {
+  favoris.forEach((favori) => {
     const card = document.createElement("div");
     card.classList.add("recette-card");
 
@@ -28,7 +28,7 @@ function afficherFavoris() {
 
 function supprimerFavori(id) {
   let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-  favoris = favoris.filter(favori => favori.id !== id);
+  favoris = favoris.filter((favori) => favori.id !== id);
   localStorage.setItem("favoris", JSON.stringify(favoris));
 
   afficherFavoris();
