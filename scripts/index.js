@@ -4,12 +4,13 @@ $(document).ready(function () {
     .then((response) => response.json())
     .then((data) => {
       const $recipeList = $("#recipes-list");
-      $recipeList.empty(); // Vide le contenu existant
 
       // Titre de la section
       $recipeList.append(
         $("<p>")
-          .addClass("mb-0 list-group-item text-uppercase fw-bold")
+          .addClass(
+            "list-group list-group-flush list-group-item-action text-uppercase fw-bold"
+          )
           .text("Toutes les recettes")
       );
 
@@ -18,7 +19,7 @@ $(document).ready(function () {
         data.recettes.forEach((recette) => {
           $recipeList.append(
             $("<a>")
-              .addClass("list-group-item list-group-item-action no-border")
+              .addClass("mb-0 list-group-item list-group-item-action")
               .attr(
                 "href",
                 `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
