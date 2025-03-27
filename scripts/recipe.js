@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const nomRecette = decodeURIComponent(urlParams.get("nom"));
@@ -6,6 +7,7 @@ $(document).ready(function () {
     .then((response) => response.json())
     .then((data) => {
       const recette = data.recettes.find((r) => r.nom === nomRecette);
+
 
       if (recette) {
         // Afficher les détails de la recette
