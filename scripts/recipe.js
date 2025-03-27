@@ -1,70 +1,56 @@
-const imagesPerPage = 4;
-let currentPage = 1;
-let recipes = [];
-
 // Charger les données depuis le fichier JSON
-fetch('../data/pagination.json')
-    .then(response => response.json())
-    .then(data => {
-        recipes = data.recipes;
-        displayRecipes();
-        updatePaginationButtons();
-    })
-    .catch(error => console.error("Erreur lors du chargement des données:", error));
+async function loadMenu() {
+  try {
+    const response = await fetch("../data/pagination.json"); // Chemin vers le fichier JSON
+    if (!response.ok) {
+      throw new Error("Erreur lors du chargement du fichier JSON");
+    }
+    const data = await response.json();
+    const items = data.recipes;
 
-function displayRecipes() {
-    const photoContainer = document.getElementById("photo-container");
-    photoContainer.innerHTML = "";
+    const container = document.getElementById("menu-container");
+    container.innerHTML = ""; // Vider le conteneur avant d'ajouter du contenu
 
-    const startIndex = (currentPage - 1) * imagesPerPage;
-    const endIndex = startIndex + imagesPerPage;
-    const recipesToDisplay = recipes.slice(startIndex, endIndex);
+    items.forEach(item => {
+      // Créer un div pour chaque élément
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "entrée";
 
-    recipesToDisplay.forEach(recipe => {
-        const recipeDiv = document.createElement("div");
-        recipeDiv.className = "recipe";
+      // Ajouter l'image
+      const img = document.createElement("img");
+      img.src = item.image;
+      img.alt = item.title;
+      img.width = 200;
+      img.height = 200;
 
-        const img = document.createElement("img");
-        img.src = recipe.image;
-        img.alt = recipe.title;
-        img.width = 200;
-        img.height = 200;
-        img.style.borderRadius = "20%";
+      // Ajouter le titre
+      const title = document.createElement("h3");
+      title.textContent = item.title;
 
-        const title = document.createElement("h3");
-        title.textContent = recipe.title;
+      // Ajouter le bouton
+      const button = document.createElement("button");
+      button.textContent = item.buttonText;
+      button.className = "voir-plus-btn";
 
-        const button = document.createElement("button");
-        button.textContent = recipe.buttonText;
-        button.className = "btn btn-primary";
+      // Ajouter les éléments au div
+      itemDiv.appendChild(img);
+      itemDiv.appendChild(title);
+      itemDiv.appendChild(button);
 
-        recipeDiv.appendChild(img);
-        recipeDiv.appendChild(title);
-        recipeDiv.appendChild(button);
-        photoContainer.appendChild(recipeDiv);
+      // Ajouter le div au conteneur
+      container.appendChild(itemDiv);
     });
+  } catch (error) {
+    console.error("Erreur lors du chargement des éléments :", error);
+  }
 }
 
-function updatePaginationButtons() {
-    document.getElementById("prev-btn").disabled = currentPage === 1;
-    document.getElementById("next-btn").disabled = currentPage >= Math.ceil(recipes.length / imagesPerPage);
-}
-
-document.getElementById("prev-btn").addEventListener("click", () => {
-    if (currentPage > 1) {
-        currentPage--;
-        displayRecipes();
-        updatePaginationButtons();
-    }
-});
-
-document.getElementById("next-btn").addEventListener("click", () => {
-    if (currentPage < Math.ceil(recipes.length / imagesPerPage)) {
-        currentPage++;
-        displayRecipes();
-        updatePaginationButtons();
-    }
-});
+// Charger les éléments au chargement de la page
+loadMenu();
+// Charger les recettes au chargement de la page
+loadRecipes();
+// Charger les recettes au chargement de la page
+loadRecipes();
 // Charger les données depuis le fichier JSON
 async function loadRecipes() {
   try {
