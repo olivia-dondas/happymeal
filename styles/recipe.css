@@ -1,8 +1,56 @@
+.tout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.entrée {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.entrée h3 {
+  font-size: 20px;
+  color: #333;
+}
+
+.entrée p {
+  font-size: 14px;
+  color: #555;
+}
+
+.entrée ul, .entrée ol {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.entrée ul li, .entrée ol li {
+  font-size: 14px;
+  color: #444;
+}
+
+button{
+  padding: 10px ;
+  font-size: 16px;
+  background-color: #313131;
+  color: white;
+  border: none;
+  border-radius: 55px;
+  cursor: pointer;
+  
+}
+
 
 .title {
   font-size: 30px;
   font-weight: bold;
-  color: #fff7f7;
+  color: #121111;
   text-align: center;
   margin-top: 20px;
 }
@@ -24,7 +72,7 @@
 h3 {
   font-size: 20px;
   font-weight: bold;
-  color: #fff7f7;
+  color: #181717;
   text-align: center;
   margin-top: 20px;
 }
