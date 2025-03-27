@@ -1,5 +1,16 @@
 $(document).ready(function () {
-  // Chargement des recettes pour le menu déroulant
+  initApp();
+});
+
+// Initialisation globale de l'application
+function initApp() {
+  chargerMenuRecettes();
+  afficherRecettesAleatoires();
+  gererRecherche();
+}
+
+// Chargement des recettes pour le menu déroulant
+function chargerMenuRecettes() {
   fetch("data/data.json")
     .then((response) => response.json())
     .then((data) => {
@@ -34,14 +45,9 @@ $(document).ready(function () {
     .catch((error) => {
       console.error("Erreur lors de la récupération des recettes:", error);
     });
+}
 
-  // Affichage des recettes aléatoires sur la page d'accueil
-  afficherRecettesAleatoires();
-
-  // Barre de recherche avec suggestions
-  gererRecherche();
-});
-
+// Fonction pour charger les recettes depuis le fichier JSON
 async function chargerRecettes() {
   try {
     const response = await fetch("data/data.json");
@@ -53,10 +59,12 @@ async function chargerRecettes() {
   }
 }
 
+// Mélanger un tableau aléatoirement
 function melangerTableau(tableau) {
   return tableau.sort(() => Math.random() - 0.5);
 }
 
+// Affichage des recettes aléatoires sur la page d'accueil
 async function afficherRecettesAleatoires() {
   const recettes = await chargerRecettes();
   const recettesSelectionnees = melangerTableau([...recettes]).slice(0, 3);
@@ -90,10 +98,10 @@ async function afficherRecettesAleatoires() {
   });
 }
 
-// Fonction pour gérer la recherche et les suggestions
+// Gestion de la barre de recherche et des suggestions
 async function gererRecherche() {
-  const searchInput = document.getElementById("search");
-  const suggestionsBox = document.getElementById("suggestions"); // Correction ici
+  const searchInput = document.querySelector(".navbar #search"); // Si la barre est dans la navbar
+  const suggestionsBox = document.querySelector(".navbar #suggestions");
 
   if (!searchInput || !suggestionsBox) {
     console.error(
@@ -102,34 +110,25 @@ async function gererRecherche() {
     return;
   }
 
-  async function fetchData() {
-    try {
-      const response = await fetch("data/data.json");
-      const data = await response.json();
-      return data.recettes || []; // Assurez-vous de retourner le tableau des recettes
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-      return [];
-    }
-  }
+  const recettes = await chargerRecettes();
 
-  searchInput.addEventListener("input", async function () {
+  searchInput.addEventListener("input", function () {
     const query = this.value.toLowerCase();
-    suggestionsBox.innerHTML = ""; // Vide les suggestions précédentes
+    suggestionsBox.innerHTML = "";
 
     if (query.length === 0) return;
 
-    const recettes = await fetchData();
     const filteredRecettes = recettes.filter((recette) =>
       recette.nom.toLowerCase().includes(query)
     );
 
     filteredRecettes.forEach((recette) => {
-      let div = document.createElement("div");
+      const div = document.createElement("div");
       div.textContent = recette.nom;
-      div.style.cursor = "pointer"; // Style pour indiquer que c'est cliquable
+      div.classList.add("suggestion-item"); // Ajout d'une classe pour le styling
+      div.style.cursor = "pointer"; // Rendre cliquable
       div.addEventListener("click", function () {
-        searchInput.value = recette.nom; // Remplit le champ de recherche
+        searchInput.value = recette.nom;
         suggestionsBox.innerHTML = ""; // Efface les suggestions
       });
       suggestionsBox.appendChild(div);
