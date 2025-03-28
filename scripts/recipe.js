@@ -110,15 +110,16 @@ async function loadRecipes() {
 // Charger le menu
 async function loadMenu() {
   try {
-    const response = await fetch("../data/pagination.json");
+    const response = await fetch("../data/data.json");
     if (!response.ok)
       throw new Error("Erreur lors du chargement du fichier JSON");
     const data = await response.json();
     const items = data.recipes || [];
 
-    const container = document.getElementById("menu-container");
+    const container = document.getElementById("recipe-container");
+
     if (!container) {
-      console.error("Le conteneur menu-container n'existe pas");
+      console.error("Le conteneur recipe-container n'existe pas");
       return;
     }
     container.innerHTML = "";
@@ -150,3 +151,108 @@ async function loadMenu() {
     console.error("Erreur lors du chargement des éléments :", error);
   }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("../data/data.json")
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("❌ Erreur: Impossible de charger le fichier JSON !");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("✅ JSON chargé avec succès :", data);
+
+      const recettes = data.recettes;
+      const container = document.getElementById("menu-container");
+
+      if (!recettes || recettes.length === 0) {
+        console.error("❌ Aucune recette trouvée !");
+        container.innerHTML = "<p>Aucune recette disponible.</p>";
+        return;
+      }
+
+      container.innerHTML = ""; // Nettoie le conteneur
+
+      // Afficher les recettes sous forme de cards Bootstrap
+      recettes.forEach((recette, index) => {
+        const card = document.createElement("div");
+        card.className = "col-md-4 mb-4";
+        card.innerHTML = `
+          <div class="card recipe-card" data-index="${index}">
+            <img src="${recette.images}" class="card-img-top" alt="${recette.nom}">
+            <div class="card-body">
+              <h5 class="card-title">${recette.nom}</h5>
+              <p class="card-text">Catégorie: ${recette.categorie}</p>
+              <p class="card-text">Temps: ${recette.temps_preparation}</p>
+              <button class="btn btn-primary open-modal">Voir la recette</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      setupModal(recettes);
+    })
+    .catch(error => console.error(error));
+});
+
+// ✅ Fonction pour afficher la recette dans le modal
+function setupModal(recettes) {
+  const modal = document.getElementById("recipeModal");
+  const modalTitle = document.getElementById("recipeTitle");
+  const modalImage = document.getElementById("recipeImage");
+  const modalCategory = document.getElementById("recipeCategory");
+  const modalTime = document.getElementById("recipeTime");
+  const modalIngredients = document.getElementById("recipeIngredients");
+  const modalSteps = document.getElementById("recipeSteps");
+  const closeModal = document.querySelector(".close");
+
+  document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("open-modal")) {
+      const index = event.target.closest(".recipe-card").dataset.index;
+      const recette = recettes[index];
+
+      if (!recette) {
+        console.error("❌ Recette introuvable !");
+        return;
+      }
+
+      // Affichage des données dans le modal
+      modalTitle.textContent = recette.nom;
+      modalImage.src = recette.images;
+      modalCategory.textContent = recette.categorie;
+      modalTime.textContent = recette.temps_preparation;
+
+      // Liste des ingrédients
+      modalIngredients.innerHTML = "";
+      recette.ingredients.forEach(ingredient => {
+        const li = document.createElement("li");
+        li.textContent = `${ingredient.nom} - ${ingredient.quantite}`;
+        modalIngredients.appendChild(li);
+      });
+
+      // Étapes de la recette
+      modalSteps.innerHTML = "";
+      recette.etapes.forEach(etape => {
+        const li = document.createElement("li");
+        li.textContent = etape;
+        modalSteps.appendChild(li);
+      });
+
+      modal.style.display = "block"; // Afficher le modal
+    }
+  });
+
+  // Fermer le modal
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+}
+
