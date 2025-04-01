@@ -45,7 +45,7 @@
     </header>
 
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
       <div class="container-fluid">
         <button
           class="navbar-toggler px-0"
@@ -58,6 +58,8 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
+
+        <!-- Contenu du menu -->
 
         <div class="collapse navbar-collapse" id="navbarContent">
           <ul class="navbar-nav me-auto">
@@ -72,7 +74,7 @@
               >
                 Recettes
               </a>
-
+              <!-- Menu dropdown -->
               <ul
                 class="dropdown-menu w-100 vw-100 position-absolute mt-0 start-0"
                 aria-labelledby="navbarDropdown"
@@ -80,10 +82,10 @@
               >
                 <div class="container">
                   <div class="row">
-                    <!-- Colonne 1 : Liste des recettes -->
+                    <!--Première colonne-->
                     <div class="col-md-3 col-lg-3 mb-3 mb-lg-0">
-                      <div class="list-group list-group-flush flex" id="recipe">
-                        <p class=""></p>
+                      <div class="list-group list-group-flush" id="recipe">
+                        <p class="list"></p>
                         <div id="recipes-list"></div>
                       </div>
                     </div>
@@ -94,26 +96,15 @@
                         <p class="mb-0 list-group-item text-uppercase fw-bold">
                           Mes recettes favorites
                         </p>
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Dolor sit</a
+                        <div
+                          id="favorites-list"
+                          class-="list-group list-group-flush"
                         >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Amet consectetur</a
-                        >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Cras justo odio</a
-                        >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Adipisicing elit</a
-                        >
+                          <!--Les favoris sont affichés ici dynamiquement-->
+                          <div class="list-group-item text-muted">
+                            Aucune recette favorite
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -126,6 +117,10 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Planifier ses repas</a>
             </li>
+            <li class="autocomplete">
+              <input type="text" id="search" placeholder="Tapez un plat..." />
+              <div id="suggestions" class="autocomplete-items"></div>
+            </li>
           </ul>
         </div>
       </div>
@@ -136,23 +131,65 @@
       <h3>VOS RECETTES</h3>
     </section>
 
-    <section id="menu-container" class="tout container my-5">
+    <div id="recipe-cards-container" class="row my-5">
       <!-- Les éléments seront insérés ici dynamiquement -->
-    </section>
+    </div>
 
-    <div id="recipeModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="recipeTitle"></h2>
-        <img id="recipeImage" src="" alt="" />
-        <p><strong>Catégorie :</strong> <span id="recipeCategory"></span></p>
-        <p>
-          <strong>Temps de préparation :</strong> <span id="recipeTime"></span>
-        </p>
-        <h3>Ingrédients :</h3>
-        <ul id="recipeIngredients"></ul>
-        <h3>Étapes :</h3>
-        <ol id="recipeSteps"></ol>
+    <!-- Ajoutez ce loader -->
+    <div id="loader" class="d-none text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-2">Chargement des recettes...</p>
+    </div>
+
+    <!-- Et ce modal amélioré -->
+    <div
+      class="modal fade"
+      id="recipeModal"
+      tabindex="-1"
+      aria-labelledby="recipeModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h2 class="modal-title fs-4" id="recipeTitle"></h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  id="recipeImage"
+                  class="img-fluid rounded shadow mb-3"
+                  alt=""
+                />
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex gap-3 mb-3">
+                  <span id="recipeCategory" class="badge bg-primary"></span>
+                  <span id="recipeTime" class="badge bg-secondary"></span>
+                </div>
+                <hr />
+                <h5 class="fw-bold">
+                  <i class="bi bi-list-check"></i> Ingrédients
+                </h5>
+                <ul id="recipeIngredients" class="mb-4"></ul>
+                <hr />
+                <h5 class="fw-bold">
+                  <i class="bi bi-list-ol"></i> Préparation
+                </h5>
+                <ol id="recipeSteps"></ol>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

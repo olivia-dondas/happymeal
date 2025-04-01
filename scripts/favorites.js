@@ -1,132 +1,178 @@
-document.addEventListener("DOMContentLoaded", afficherFavoris);
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof favorisManager !== "undefined") {
+    displayFavorites();
+  } else {
+    document.addEventListener("favoritesManagerReady", displayFavorites);
+  }
 
-$(document).ready(function () {
-  initApp();
+  updateMegaMenu();
+  updateHearts();
 });
 
-// Initialisation globale de l'application
-function initApp() {
-  chargerMenuRecettes();
-  loadRecipes(); // Charge les recettes dans recipe-container
-  loadMenu(); // Charge le menu dans menu-container
-}
-
-// Chargement des recettes pour le menu déroulant
-function chargerMenuRecettes() {
-  fetch("../data/data.json")
-    .then((response) => {
-      if (!response.ok)
-        throw new Error("Erreur lors du chargement du fichier JSON");
-      return response.json();
-    })
-    .then((data) => {
-      const $recipeList = $("#recipes-list");
-
-      $recipeList.append(
-        $("<p>")
-          .addClass(
-            "list-group list-group-flush list-group-item-action text-uppercase fw-bold"
-          )
-          .text("Toutes les recettes")
-      );
-
-      if (data.recettes && Array.isArray(data.recettes)) {
-        data.recettes.forEach((recette) => {
-          $recipeList.append(
-            $("<a>")
-              .addClass("mb-0 list-group-item list-group-item-action")
-              .attr(
-                "href",
-                `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
-              )
-              .text(recette.nom)
-          );
-        });
-      } else {
-        console.error("Format JSON invalide.");
-      }
-    })
-    .catch((error) =>
-      console.error("Erreur lors de la récupération des recettes:", error)
-    );
-}
-
-// Fonction pour charger les recettes
-async function chargerRecettes() {
-  try {
-    const response = await fetch("recipe.html");
-    const html = await response.text();
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    const recettes = doc.querySelectorAll(".recette");
-    const recettesData = [];
-
-    recettes.forEach((recette) => {
-      recettesData.push({
-        id: recette.dataset.id,
-        nom: recette.querySelector("h2").textContent,
-        description: recette.querySelector(".description").textContent,
-        image: recette.querySelector("img")?.src || "image-par-defaut.jpg",
-      });
-    });
-
-    return recettesData;
-  } catch (error) {
-    console.error("Erreur lors du chargement des recettes:", error);
-    return [];
-  }
-}
-
-// Fonction pour ajouter une recette aux favoris
-async function ajouterAuxFavoris(id) {
-  const recettes = await chargerRecettes();
-  const recette = recettes.find((r) => r.id === id);
-
-  if (!recette) return;
-
-  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-
-  // Vérifier si la recette ne l'est pas déja
-  if (!favoris.some((f) => f.id === id)) {
-    favoris.push(recette);
-    localStorage.setItem("favoris", JSON.stringify(favoris));
-    afficherFavoris();
-  }
-}
-
-function afficherFavoris() {
+function displayFavorites() {
   const container = document.getElementById("favorisContainer");
-  container.innerHTML = "";
+  const emptyMsg = document.getElementById("empty-message");
 
-  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-
-  if (favoris.length === 0) {
-    container.innerHTML = "<p>Aucun favori enregistré.</p>";
+  if (!emptyMsg) {
+    console.error("L'élément 'empty-message' n'a pas été trouvé dans le DOM.");
     return;
   }
 
-  favoris.forEach((favori) => {
-    const card = document.createElement("div");
-    card.classList.add("recette-card");
-    card.dataset.id = favori.id;
+  const favoris = favorisManager.getFavoris();
 
-    card.innerHTML = `
-      <img src="${favori.image}" alt="${favori.nom}" />
-      <h3>${favori.nom}</h3>
-      <p>${favori.description}</p>
-      <button onclick="supprimerFavori(${favori.id})">Supprimer</button>
-    `;
+  if (favoris.length === 0) {
+    emptyMsg.textContent =
+      "Vous n'avez aucune recette favorite pour le moment.";
+    emptyMsg.classList.remove("alert-info");
+    emptyMsg.classList.add("alert-warning");
+    emptyMsg.style.display = "block";
+    return;
+  }
 
-    container.appendChild(card);
+  emptyMsg.style.display = "none";
+
+  fetch("../data/data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      container.innerHTML = "";
+
+      favoris.forEach((favori) => {
+        const recette = data.recettes.find((r) => r.nom === favori.nom);
+        if (recette) {
+          const col = document.createElement("div");
+          col.className = "col-md-6 col-lg-4";
+          col.innerHTML = `
+            <div class="card h-100">
+                <img src="${recette.images}" class="card-img-top" alt="${
+            recette.nom
+          }">
+                <div class="card-body">
+                    <h5 class="card-title">${recette.nom}</h5>
+                    <p class="text-muted">${recette.categorie} • ${
+            recette.temps_preparation
+          }</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="../pages/recipe.html?nom=${encodeURIComponent(
+                          recette.nom
+                        )}" class="btn btn-primary">
+                            Voir la recette
+                        </a>
+                        <button class="btn-favori" data-nom="${recette.nom}">
+                            ♡
+                        </button>
+                    </div>
+                </div>
+            </div>
+          `;
+          container.appendChild(col);
+        }
+      });
+      updateHearts();
+    })
+    .catch((error) => {
+      console.error("Erreur:", error);
+      emptyMsg.textContent =
+        "Une erreur est survenue lors du chargement des recettes.";
+      emptyMsg.classList.remove("alert-info");
+      emptyMsg.classList.add("alert-danger");
+      emptyMsg.style.display = "block";
+    });
+}
+
+function updateHearts() {
+  document.querySelectorAll(".btn-favori").forEach((button) => {
+    const recetteNom = button.getAttribute("data-nom");
+    if (favorisManager.isFavori(recetteNom)) {
+      button.classList.add("active");
+      button.innerHTML = "♥";
+    } else {
+      button.classList.remove("active");
+      button.innerHTML = "♡";
+    }
   });
 }
 
-function supprimerFavori(id) {
-  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-  favoris = favoris.filter((favori) => favori.id !== id);
-  localStorage.setItem("favoris", JSON.stringify(favoris));
+class FavorisManager {
+  constructor() {
+    this.favorisKey = "favoris";
+  }
 
-  afficherFavoris();
+  getFavoris() {
+    return JSON.parse(localStorage.getItem(this.favorisKey)) || [];
+  }
+
+  saveFavoris(favoris) {
+    localStorage.setItem(this.favorisKey, JSON.stringify(favoris));
+  }
+
+  isFavori(nom) {
+    return this.getFavoris().some((fav) => fav.nom === nom);
+  }
+
+  toggleFavori(recette) {
+    let favoris = this.getFavoris();
+    const index = favoris.findIndex((fav) => fav.nom === recette.nom);
+
+    if (index === -1) {
+      favoris.push(recette);
+    } else {
+      favoris.splice(index, 1);
+    }
+
+    this.saveFavoris(favoris);
+    updateMegaMenu();
+    updateHearts();
+  }
 }
+
+const favorisManager = new FavorisManager();
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", (event) => {
+    if (event.target.classList.contains("btn-favori")) {
+      const button = event.target;
+      const card = button.closest(".card");
+      const recette = {
+        nom: card.querySelector(".card-title").textContent,
+        categorie: card
+          .querySelector(".text-muted")
+          .textContent.split(" • ")[0],
+        images: card.querySelector("img").src,
+        temps_preparation: card
+          .querySelector(".text-muted")
+          .textContent.split(" • ")[1]
+          .trim(),
+      };
+
+      favorisManager.toggleFavori(recette);
+      button.classList.toggle("active");
+      button.innerHTML = button.classList.contains("active") ? "♥" : "♡";
+    }
+  });
+
+  updateMegaMenu();
+  updateHearts();
+});
+
+function updateMegaMenu() {
+  const favorisList = document.getElementById("favorites-list");
+  if (!favorisList) return;
+
+  favorisList.innerHTML = "";
+  const favoris = favorisManager.getFavoris();
+
+  if (favoris.length === 0) {
+    favorisList.innerHTML = "<p>Aucun favori ajouté.</p>";
+    return;
+  }
+
+  favoris.forEach((fav) => {
+    const item = document.createElement("a");
+    item.href = `../pages/recipe.html?nom=${encodeURIComponent(fav.nom)}`;
+    item.textContent = fav.nom;
+    item.classList.add("list-group-item", "list-group-item-action");
+    favorisList.appendChild(item);
+  });
+}
+
+updateMegaMenu();
