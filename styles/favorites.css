@@ -1,0 +1,58 @@
+/* Style de base */
+#favorites-container {
+  min-height: 50vh;
+}
+
+/* Cartes de recettes */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(219, 99, 39, 0.2);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(219, 99, 39, 0.1);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Bouton favori */
+.btn-favori {
+  background: none;
+  border: none;
+  color: #db6327;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-favori:hover {
+  transform: scale(1.2);
+}
+
+/* Message vide */
+.alert {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-img-top {
+    height: 150px;
+  }
+
+  .btn-favori {
+    font-size: 1.3rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
