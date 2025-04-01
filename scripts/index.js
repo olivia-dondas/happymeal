@@ -4,13 +4,13 @@ $(document).ready(function () {
 
 // Initialisation globale de l'application
 function initApp() {
-  chargerMenuRecettes();
+  loadRecipes();
   afficherRecettesAleatoires();
   gererRecherche();
 }
 
 // Chargement des recettes pour le menu déroulant
-function chargerMenuRecettes() {
+function loadRecipes() {
   fetch("data/data.json")
     .then((response) => response.json())
     .then((data) => {
