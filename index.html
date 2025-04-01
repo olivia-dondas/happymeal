@@ -88,26 +88,11 @@
                         <p class="mb-0 list-group-item list-group-item-action text-uppercase fw-bold">
                           Mes recettes favorites
                         </p>
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Dolor sit</a
-                        >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Amet consectetur</a
-                        >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Cras justo odio</a
-                        >
-                        <a
-                          href="#"
-                          class="list-group-item list-group-item-action"
-                          >Adipisicing elit</a
-                        >
+                      <div id="favorites-list" class-="list-group list-group-flush">
+                          <!--Les favoris sont affichés ici dynamiquement-->
+                          <div class="list-group-item text-muted">Aucune recette favorite</div>
+                      </div>
+                    
                       </div>
                     </div>
 
@@ -143,18 +128,19 @@
           <source src="assets/video-homepage.mp4" type="video/mp4" />
           Votre navigateur ne supporte pas les vidéos.
         </video>
+         <a href="pages/recipe.html" class="btn p-"
+        >
         <div class="video-overlay">
           <h1 class="video-title">CookIt</h1>
-          <div class="video-buttons">
-            <a href="pages/recipe.html" class="btn p-"
-              >Découvrez des recettes délicieuses et faciles à réaliser.</a
+          <div class="video-buttons fw-bold text-uppercase bg-secondary">
+           Découvrez des recettes délicieuses et faciles à réaliser.</a
             >
           </div>
         </div>
       </div>
 
       <div class="container d-flex justify-content-center gap-3 m-5 ">
-        <div id="cartes-recettes" class="container d-flex gap-3">
+        <div id="cartes-recettes" class="container d-flex gap-3 justify-content-center">
           <!-- Les cartes seront générées ici -->
         </div>
       </div>
