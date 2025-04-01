@@ -1,20 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Attendre que le gestionnaire de favoris soit chargé
   if (typeof favorisManager !== "undefined") {
     displayFavorites();
   } else {
     document.addEventListener("favoritesManagerReady", displayFavorites);
   }
 
-  // Mettez à jour le menu des favoris au chargement de la page
   updateMegaMenu();
+  updateHearts();
 });
 
 function displayFavorites() {
   const container = document.getElementById("favorisContainer");
   const emptyMsg = document.getElementById("empty-message");
 
-  // Vérifier si l'élément empty-message existe
   if (!emptyMsg) {
     console.error("L'élément 'empty-message' n'a pas été trouvé dans le DOM.");
     return;
@@ -27,13 +25,12 @@ function displayFavorites() {
       "Vous n'avez aucune recette favorite pour le moment.";
     emptyMsg.classList.remove("alert-info");
     emptyMsg.classList.add("alert-warning");
-    emptyMsg.style.display = "block"; // Afficher le message
+    emptyMsg.style.display = "block";
     return;
   }
 
-  emptyMsg.style.display = "none"; // Cacher le message si des favoris sont présents
+  emptyMsg.style.display = "none";
 
-  // Charger toutes les recettes pour obtenir les détails complets
   fetch("../data/data.json")
     .then((response) => response.json())
     .then((data) => {
@@ -45,41 +42,32 @@ function displayFavorites() {
           const col = document.createElement("div");
           col.className = "col-md-6 col-lg-4";
           col.innerHTML = `
-                      <div class="card h-100">
-                          <img src="${
-                            recette.images
-                          }" class="card-img-top" alt="${recette.nom}">
-                          <div class="card-body">
-                              <h5 class="card-title">${recette.nom}</h5>
-                              <p class="text-muted">${recette.categorie} • ${
+            <div class="card h-100">
+                <img src="${recette.images}" class="card-img-top" alt="${
+            recette.nom
+          }">
+                <div class="card-body">
+                    <h5 class="card-title">${recette.nom}</h5>
+                    <p class="text-muted">${recette.categorie} • ${
             recette.temps_preparation
           }</p>
-                              <div class="d-flex justify-content-between align-items-center">
-                                  <a href="../pages/recipe.html?nom=${encodeURIComponent(
-                                    recette.nom
-                                  )}" 
-                                     class="btn btn-primary">
-                                      Voir la recette
-                                  </a>
-                                  <button class="btn-favori active" 
-                                          onclick="toggleFavori(${JSON.stringify(
-                                            {
-                                              nom: recette.nom,
-                                              categorie: recette.categorie,
-                                              images: recette.images,
-                                              temps_preparation:
-                                                recette.temps_preparation,
-                                            }
-                                          ).replace(/"/g, "&quot;")})">
-                                      ♥
-                                  </button>
-                              </div>
-                          </div>
-                      </div>
-                  `;
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="../pages/recipe.html?nom=${encodeURIComponent(
+                          recette.nom
+                        )}" class="btn btn-primary">
+                            Voir la recette
+                        </a>
+                        <button class="btn-favori" data-nom="${recette.nom}">
+                            ♡
+                        </button>
+                    </div>
+                </div>
+            </div>
+          `;
           container.appendChild(col);
         }
       });
+      updateHearts();
     })
     .catch((error) => {
       console.error("Erreur:", error);
@@ -87,8 +75,21 @@ function displayFavorites() {
         "Une erreur est survenue lors du chargement des recettes.";
       emptyMsg.classList.remove("alert-info");
       emptyMsg.classList.add("alert-danger");
-      emptyMsg.style.display = "block"; // Afficher le message d'erreur
+      emptyMsg.style.display = "block";
     });
+}
+
+function updateHearts() {
+  document.querySelectorAll(".btn-favori").forEach((button) => {
+    const recetteNom = button.getAttribute("data-nom");
+    if (favorisManager.isFavori(recetteNom)) {
+      button.classList.add("active");
+      button.innerHTML = "♥";
+    } else {
+      button.classList.remove("active");
+      button.innerHTML = "♡";
+    }
+  });
 }
 
 class FavorisManager {
@@ -119,7 +120,8 @@ class FavorisManager {
     }
 
     this.saveFavoris(favoris);
-    updateMegaMenu(); // Mettez à jour le méga menu après chaque ajout/suppression de favori
+    updateMegaMenu();
+    updateHearts();
   }
 }
 
@@ -132,11 +134,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = button.closest(".card");
       const recette = {
         nom: card.querySelector(".card-title").textContent,
-        categorie: card.querySelector(".badge").textContent,
+        categorie: card
+          .querySelector(".text-muted")
+          .textContent.split(" • ")[0],
         images: card.querySelector("img").src,
         temps_preparation: card
-          .querySelector(".badge:last-child")
-          .textContent.trim(),
+          .querySelector(".text-muted")
+          .textContent.split(" • ")[1]
+          .trim(),
       };
 
       favorisManager.toggleFavori(recette);
@@ -146,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateMegaMenu();
+  updateHearts();
 });
 
 function updateMegaMenu() {
@@ -168,3 +174,5 @@ function updateMegaMenu() {
     favorisList.appendChild(item);
   });
 }
+
+updateMegaMenu();

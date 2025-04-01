@@ -34,8 +34,13 @@
   justify-content: center;
 }
 
+.btn-favori.active {
+  color: red; /* Coeur rouge quand actif */
+}
+
 .btn-favori:hover {
   transform: scale(1.2);
+  color: darkred; /* Coeur rouge au survol */
 }
 
 /* Message vide */

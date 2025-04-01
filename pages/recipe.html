@@ -131,23 +131,65 @@
       <h3>VOS RECETTES</h3>
     </section>
 
-    <section id="menu-container" class="tout container my-5">
+    <div id="recipe-cards-container" class="row my-5">
       <!-- Les éléments seront insérés ici dynamiquement -->
-    </section>
+    </div>
 
-    <div id="recipeModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="recipeTitle"></h2>
-        <img id="recipeImage" src="" alt="" />
-        <p><strong>Catégorie :</strong> <span id="recipeCategory"></span></p>
-        <p>
-          <strong>Temps de préparation :</strong> <span id="recipeTime"></span>
-        </p>
-        <h3>Ingrédients :</h3>
-        <ul id="recipeIngredients"></ul>
-        <h3>Étapes :</h3>
-        <ol id="recipeSteps"></ol>
+    <!-- Ajoutez ce loader -->
+    <div id="loader" class="d-none text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-2">Chargement des recettes...</p>
+    </div>
+
+    <!-- Et ce modal amélioré -->
+    <div
+      class="modal fade"
+      id="recipeModal"
+      tabindex="-1"
+      aria-labelledby="recipeModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h2 class="modal-title fs-4" id="recipeTitle"></h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  id="recipeImage"
+                  class="img-fluid rounded shadow mb-3"
+                  alt=""
+                />
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex gap-3 mb-3">
+                  <span id="recipeCategory" class="badge bg-primary"></span>
+                  <span id="recipeTime" class="badge bg-secondary"></span>
+                </div>
+                <hr />
+                <h5 class="fw-bold">
+                  <i class="bi bi-list-check"></i> Ingrédients
+                </h5>
+                <ul id="recipeIngredients" class="mb-4"></ul>
+                <hr />
+                <h5 class="fw-bold">
+                  <i class="bi bi-list-ol"></i> Préparation
+                </h5>
+                <ol id="recipeSteps"></ol>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
