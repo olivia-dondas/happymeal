@@ -396,6 +396,37 @@ h3 {
   letter-spacing: 2px;
 }
 
+/* Style des boutons favoris */
+.btn-favori {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.btn-favori.active {
+  color: #db6327;
+}
+
+.btn-favori:hover {
+  transform: scale(1.1);
+}
+
+/* Style des éléments de la liste des favoris */
+#favoris-list .list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#favoris-list .btn-link {
+  font-size: 1.25rem;
+  line-height: 0.8;
+}
 /* ================================
    FIN DU CSS
 ================================= */
