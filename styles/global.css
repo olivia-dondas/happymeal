@@ -1,6 +1,12 @@
+/* Importation des polices */
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 @import url("https://use.typekit.net/lqe4gxu.css");
 
+/* ================================
+   STYLE GLOBAL
+================================= */
+
+/* Corps de la page */
 body {
   font-family: "Lato", sans-serif;
   font-weight: 300;
@@ -9,7 +15,11 @@ body {
   color: #2a2a2a;
 }
 
-/* Titres - Lato en petites capitales */
+/* ================================
+   TITRES
+================================= */
+
+/* Titres principaux (h1, h2, h3, h4, navbar) */
 h1,
 h2,
 h3,
@@ -23,6 +33,10 @@ h4,
   letter-spacing: 1px;
   text-transform: lowercase; /* Convertit en petites capitales */
 }
+
+/* ================================
+   HEADER
+================================= */
 
 .header {
   display: flex;
@@ -59,29 +73,9 @@ h4,
   letter-spacing: 1.5px; /* Pour mieux voir les points */
 }
 
-.dropdown-menu {
-  font-family: "Lato", sans-serif;
-  left: 0 !important;
-  right: 0 !important;
-}
-
-.list-group-item.fw-bold {
-  font-size: 1rem;
-  letter-spacing: 2px;
-}
-
-.navbar .dropdown-menu {
-  left: 0 !important;
-  right: 0 !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.navbar .dropdown.position-static {
-  position: static !important;
-}
+/* ================================
+   TITRES - STYLE SUPPLÉMENTAIRE
+================================= */
 
 h1 {
   font-size: 2.5rem;
@@ -101,23 +95,338 @@ h3 {
   color: #db6327;
 }
 
-.autocomplete {
-  position: relative;
+/* Importation des polices */
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://use.typekit.net/lqe4gxu.css");
+
+/* ================================
+   STYLE GLOBAL
+================================= */
+
+/* Corps de la page */
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.6;
+  color: #2a2a2a;
+}
+
+/* ================================
+   TITRES
+================================= */
+
+/* Titres principaux (h1, h2, h3, h4, navbar) */
+h1,
+h2,
+h3,
+h4,
+.navbar-brand,
+.card-title,
+.list-group-item.fw-bold {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  text-transform: lowercase; /* Convertit en petites capitales */
+}
+
+/* ================================
+   HEADER
+================================= */
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+.logo-header {
+  width: 100px;
+  height: auto;
+}
+
+.header h1 {
+  font-family: "westgate", sans-serif;
+  font-weight: 400;
+  font-size: 2rem; /* Taille ajustée */
+  color: #db6327;
+  margin: 0;
+  line-height: 1;
+}
+
+.header h2 {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-size: 1rem; /* Taille ajustée */
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px; /* Pour mieux voir les points */
+}
+
+/* ================================
+   TITRES - STYLE SUPPLÉMENTAIRE
+================================= */
+
+h1 {
+  font-size: 2.5rem;
+  color: #db6327;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 2px solid #db6327;
+  padding-bottom: 0.5rem;
   display: inline-block;
 }
+
+h3 {
+  font-size: 1.5rem;
+  color: #db6327;
+}
+
+/* ============ MENU DÉROULANT ============ */
+.navbar-dark .dropdown-menu {
+  background: #ffffff !important;
+  border: 2px solid #db6327 !important;
+  margin-top: 0 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+  color: #2a2a2a !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 1rem !important;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: #fff8f5 !important;
+  color: #db6327 !important;
+}
+
+/* Titres sections */
+.dropdown-menu .fw-bold {
+  color: #db6327 !important;
+  font-size: 1.1rem !important;
+  border-bottom: 1px solid #eee !important;
+}
+
+/* ============ HARMONISATION DES SECTIONS ============ */
+#recipes-list {
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+#recipes-list a {
+  color: #2a2a2a !important;
+  display: block;
+  padding: 0.5rem 1.25rem !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  border-left: none !important;
+  margin: 0.15rem 0;
+  border-radius: 4px;
+}
+
+#recipes-list a:hover {
+  color: #db6327 !important;
+  background-color: #f8f9fa !important;
+  padding-left: 1.25rem !important;
+}
+
+/* Style identique aux favoris */
+.list-group-flush .list-group-item-action,
+#recipes-list a {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 0.75rem 1.5rem;
+}
+
+.list-group-flush .list-group-item-action:hover,
+#recipes-list a:hover {
+  background-color: #fff8f5 !important;
+}
+
+/* Titres sections */
+.list-group-item.fw-bold,
+#recipes-list > .fw-bold {
+  color: #db6327 !important;
+  font-size: 1.1rem !important;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #eee !important;
+  padding-bottom: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* ============ CORRECTION DES ESPACES ============ */
+.list-group-flush .list-group-item-action,
+#recipes-list a {
+  border: none !important; /* Supprime toutes les bordures */
+  margin: 0 !important; /* Supprime les marges externes */
+  padding: 0.6rem 1.25rem !important; /* Ajustement précis du padding */
+  background-clip: border-box !important;
+}
+
+/* Correction spécifique pour la bordure inférieure */
+#recipes-list {
+  border: none !important;
+  background-image: none !important;
+}
+
+/* Harmonisation parfaite avec les favoris */
+.list-group-item-action:not(.fw-bold),
+#recipes-list a:not(.fw-bold) {
+  border-bottom: 1px solid #f1f1f1 !important;
+  margin-bottom: -1px !important; /* Compensation de la bordure */
+}
+
+/* Effet hover unifié */
+.list-group-item-action:hover,
+#recipes-list a:hover {
+  background-color: #fff8f5 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ============ BARRE DE RECHERCHE ============ */
+.autocomplete {
+  position: relative;
+  margin-left: 1rem;
+}
+
+#search {
+  width: 220px;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 2px solid #db6327;
+  background: rgba(255, 255, 255, 0.15);
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+#search::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#search:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(219, 99, 39, 0.3);
+  outline: none;
+}
+
+/* Suggestions */
 .autocomplete-items {
   position: absolute;
-  border: 1px solid #ddd;
-  background: white;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 1000;
   width: 100%;
+  background: white;
+  border: 2px solid #db6327;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  z-index: 1000;
 }
+
 .autocomplete-items div {
-  padding: 10px;
-  cursor: pointer;
+  padding: 10px 15px;
+  color: #333;
+  border-bottom: 1px solid #f1f1f1;
 }
+
 .autocomplete-items div:hover {
-  background: #f1f1f1;
+  background: #fff8f5;
+  color: #db6327;
 }
+
+.autocomplete-items div strong {
+  color: #db6327;
+  font-weight: bold;
+}
+
+/* ================================
+   LISTE DES RECETTES
+================================= */
+
+#recipes-list p {
+  color: #fff; /* Texte de la section "Toutes les recettes" */
+  font-weight: bold;
+  padding: 10px;
+  font-size: 1.1rem; /* Taille légèrement augmentée */
+}
+
+#recipes-list a {
+  color: #fff; /* Texte des recettes */
+  padding: 10px 15px; /* Un peu de padding pour rendre les liens plus cliquables */
+  font-size: 1rem;
+  border-radius: 4px; /* Coins arrondis pour une apparence plus soignée */
+  text-decoration: none;
+}
+
+#recipes-list a:hover {
+  background-color: #495057; /* Changer la couleur au survol */
+  color: #fff; /* Texte blanc */
+  transition: background-color 0.3s ease; /* Transition pour l'effet hover */
+}
+
+/* ================================
+   STYLES SPÉCIFIQUES AU NAVBAR
+================================= */
+
+/* Navbar spécifique (dropdown) */
+.navbar .dropdown.position-static {
+  position: static !important;
+}
+
+/* ================================
+   AUTRES STYLES
+================================= */
+
+/* Liste d'éléments avec texte en gras */
+.list-group-item.fw-bold {
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+/* Style des boutons favoris */
+.btn-favori {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.btn-favori.active {
+  color: #db6327;
+}
+
+.btn-favori:hover {
+  transform: scale(1.1);
+}
+
+/* Style des éléments de la liste des favoris */
+#favoris-list .list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#favoris-list .btn-link {
+  font-size: 1.25rem;
+  line-height: 0.8;
+}
+/* ================================
+   FIN DU CSS
+================================= */
