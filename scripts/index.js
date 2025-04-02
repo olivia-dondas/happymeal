@@ -40,23 +40,24 @@ async function loadRecipes() {
 
     // Titre
     $recipeList.append(
-      $("<p>")
+      // Titre cliquable
+      $("<a>")
         .addClass("list-group-item text-uppercase fw-bold")
-        .text("Toutes les recettes")
-    );
+        .attr("href", "pages/recipe.html")
+        .text("Toutes les recettes"),
 
-    // Items
-    data.recettes.forEach((recette) => {
-      $recipeList.append(
+      // Items (ouvrent le modal)
+      ...data.recettes.map((recette) =>
         $("<a>")
           .addClass("list-group-item list-group-item-action")
-          .attr(
-            "href",
-            `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
-          )
+          .attr("href", "#")
+          .on("click", function (e) {
+            e.preventDefault();
+            openRecipeModal(recette);
+          })
           .text(recette.nom)
-      );
-    });
+      )
+    );
   } catch (error) {
     console.error("Erreur loadRecipes:", error);
     $("#recipes-list").html(
@@ -180,11 +181,9 @@ function toggleFavori(recette) {
 // Mise à jour du méga menu
 function updateMegaMenu() {
   const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-  const $favoritesList = $("#favorites-list");
+  const $favoritesList = $("#favorites-list").empty();
 
-  $favoritesList.empty();
-
-  // Titre
+  // 1. Titre cliquable
   $favoritesList.append(
     $("<a>")
       .addClass("list-group-item text-uppercase fw-bold")
@@ -192,28 +191,29 @@ function updateMegaMenu() {
       .text("Mes recettes favorites")
   );
 
+  // 2. Contenu
   if (favoris.length === 0) {
     $favoritesList.append(
       $("<div>")
         .addClass("list-group-item text-muted")
         .text("Aucune recette favorite")
     );
-    return;
+  } else {
+    favoris.forEach((fav) => {
+      $favoritesList.append(
+        $("<a>")
+          .addClass("list-group-item list-group-item-action")
+          .attr("href", "#")
+          .data("recipe", JSON.stringify(fav))
+          .text(fav.nom)
+          .on("click", function (e) {
+            e.preventDefault();
+            const recipeData = JSON.parse($(this).data("recipe"));
+            openRecipeModal(recipeData);
+          })
+      );
+    });
   }
-
-  favoris.forEach((fav) => {
-    $favoritesList.append(
-      $("<a>")
-        .addClass("list-group-item list-group-item-action")
-        .attr("href", "#")
-        .data("recipe", JSON.stringify(fav))
-        .text(fav.nom)
-        .on("click", function (e) {
-          e.preventDefault();
-          openRecipeModal(fav);
-        })
-    );
-  });
 }
 
 // Gestion de la recherche
@@ -317,6 +317,27 @@ function openRecipeModal(recette) {
 
 // Gestionnaire pour les boutons "Voir recette"
 $(document).on("click", ".btn-voir-recette", function () {
-  const recipeData = JSON.parse($(this).data("recipe"));
-  openRecipeModal(recipeData);
+  try {
+    // Récupère et nettoie les données
+    const recipeStr = $(this)
+      .data("recipe")
+      .replace(/\\"/g, '"') // Restaure les guillemets
+      .replace(/\\'/g, "'") // Restaure les apostrophes
+      .replace(/\\n/g, "\n"); // Restaure les sauts de ligne
+
+    const recipeData = JSON.parse(recipeStr);
+    openRecipeModal(recipeData);
+  } catch (e) {
+    console.error("Erreur parsing des données :", e);
+
+    // Solution de repli SANS redirection
+    const card = $(this).closest(".card");
+    const fallbackData = {
+      nom: card.find(".card-title").text(),
+      categorie: card.find(".badge.bg-secondary").text(),
+      ingredients: [],
+      temps_preparation: card.find(".badge.bg-light").text(),
+    };
+    openRecipeModal(fallbackData);
+  }
 });
