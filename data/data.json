@@ -4,7 +4,7 @@
       "nom": "Poulet rôti aux herbes",
       "categorie": "Plat principal",
       "temps_preparation": "1 heure",
-      "images": "../assets/img_recipes/chicken.png",
+      "images": "assets/img_recipes/chicken.png",
       "ingredients": [
         {
           "nom": "Poulet",
@@ -35,7 +35,7 @@
       "nom": "Salade de quinoa aux légumes grillés",
       "categorie": "Entrée",
       "temps_preparation": "30 minutes",
-      "images": "../assets/img_recipes/quinoa.png",
+      "images": "assets/img_recipes/quinoa.png",
       "ingredients": [
         {
           "nom": "quinoa",
@@ -74,7 +74,7 @@
       "nom": "Tarte aux pommes",
       "categorie": "Dessert",
       "temps_preparation": "1 heure",
-      "images": "../assets/img_recipes/applepie.png",
+      "images": "assets/img_recipes/applepie.png",
       "ingredients": [
         {
           "nom": "Pâte brisée",
@@ -115,7 +115,7 @@
       "nom": "Soupe de lentilles",
       "categorie": "Entrée",
       "temps_preparation": "1 heure",
-      "images": "../assets/img_recipes/lentils.png",
+      "images": "assets/img_recipes/lentils.png",
       "ingredients": [
         {
           "nom": "Lentille",
@@ -156,7 +156,7 @@
       "nom": "Pâtes Carbonara",
       "categorie": "Plat principal",
       "temps_preparation": "20 minutes",
-      "images": "../assets/img_recipes/carbonara.png",
+      "images": "assets/img_recipes/carbonara.png",
       "ingredients": [
         {
           "nom": "Pates",
@@ -198,7 +198,7 @@
       "nom": "Risotto aux champignons",
       "categorie": "Plat principal",
       "temps_preparation": "40 minutes",
-      "images": "../assets/img_recipes/risotto.png",
+      "images": "assets/img_recipes/risotto.png",
       "ingredients": [
         {
           "nom": "Riz",
@@ -242,7 +242,7 @@
       "nom": "Salade de fruits frais",
       "categorie": "Dessert",
       "temps_preparation": "20 minutes",
-      "images": "../assets/img_recipes/fruitssalad.png",
+      "images": "assets/img_recipes/fruitssalad.png",
       "ingredients": [
         "Fruits variés (fraises, kiwis, oranges, raisins, etc.), coupés en morceaux",
         "Jus d'orange ou de citron",
@@ -262,7 +262,7 @@
       "nom": "Ratatouille provençale",
       "categorie": "Plat principal",
       "temps_preparation": "1 heure",
-      "images": "../assets/img_recipes/ratatouille.png",
+      "images": "assets/img_recipes/ratatouille.png",
       "ingredients": [
         {
           "nom": "Aubergine",
@@ -304,7 +304,7 @@
       "nom": "Salade César",
       "categorie": "Entrée",
       "temps_preparation": "20 minutes",
-      "images": "../assets/img_recipes/caesarssalad.png",
+      "images": "assets/img_recipes/caesarssalad.png",
       "ingredients": [
         {
           "nom": "Laitue",
@@ -344,7 +344,7 @@
       "nom": "Risotto aux champignons",
       "categorie": "Plat principal",
       "temps_preparation": "40 minutes",
-      "images": "../assets/img_recipes/risotto.png",
+      "images": "assets/img_recipes/risotto.png",
       "ingredients": [
         {
           "nom": "Riz",
@@ -388,7 +388,7 @@
       "nom": "Muffins aux myrtilles",
       "categorie": "Dessert",
       "temps_preparation": "30 minutes",
-      "images": "../assets/img_recipes/muffin.png",
+      "images": "assets/img_recipes/muffin.png",
       "ingredients": [
         {
           "nom": "Farine",
@@ -430,7 +430,7 @@
       "nom": "Lasagnes végétariennes",
       "categorie": "Plat principal",
       "temps_preparation": "1 heure 30 minutes",
-      "images": "../assets/img_recipes/lasagna.png",
+      "images": "assets/img_recipes/lasagna.png",
       "ingredients": [
         {
           "nom": "Pâte",
@@ -473,7 +473,7 @@
       "nom": "Salade niçoise",
       "categorie": "Entrée",
       "temps_preparation": "20 minutes",
-      "images": "../assets/img_recipes/nicoisesalad.png",
+      "images": "assets/img_recipes/nicoisesalad.png",
       "ingredients": [
         {
           "nom": "Laitue",
@@ -517,7 +517,7 @@
       "nom": "Tiramisu",
       "categorie": "Dessert",
       "temps_preparation": "30 minutes (+ temps de repos)",
-      "images": "../assets/img_recipes/tiramisu.png",
+      "images": "assets/img_recipes/tiramisu.png",
       "ingredients": [
         {
           "nom": "Mascarpone",
