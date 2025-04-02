@@ -1,4 +1,4 @@
-// Configuration du chemin universel
+// Configuration du chemin universel (basé sur le fichier JSON qui est à la racine du projet)
 const BASE_PATH = window.location.pathname.includes("pages") ? "../" : "./";
 
 $(document).ready(async function () {
@@ -256,7 +256,7 @@ function displayRecipeModal(recipe) {
     recipe.etapes.map((step, i) => `<li>${step}</li>`).join("")
   );
 
-  // Ouverture
+  // Ouverture du modal
   new bootstrap.Modal("#recipeModal").show();
 }
 
