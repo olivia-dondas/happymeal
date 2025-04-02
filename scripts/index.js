@@ -221,43 +221,46 @@ function gererRecherche() {
   const searchInput = $("#search");
   const suggestionsBox = $("#suggestions");
 
-  if (!searchInput.length || !suggestionsBox.length) {
-    console.warn("Éléments de recherche non trouvés");
-    return;
-  }
+  // Nouveau: Charger les recettes une seule fois au démarrage
+  let allRecipes = [];
 
-  searchInput.on("input", async function () {
-    const query = $(this).val().toLowerCase();
-    if (query.length < 2) {
-      suggestionsBox.empty();
-      return;
-    }
+  // Chargement initial des données
+  fetch("data/data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      allRecipes = data.recettes;
+    })
+    .catch((error) => console.error("Erreur chargement recettes:", error));
 
-    try {
-      const response = await fetch("data/data.json");
-      const data = await response.json();
-      const filtered = data.recettes.filter((recette) =>
+  searchInput.on("input", function () {
+    const query = $(this).val().toLowerCase().trim();
+    suggestionsBox.empty(); // Reset à chaque input
+
+    if (query.length >= 1) {
+      // Modification clé: 1 caractère suffit
+      const filtered = allRecipes.filter((recette) =>
         recette.nom.toLowerCase().includes(query)
       );
 
-      suggestionsBox.empty();
       filtered.slice(0, 5).forEach((recette) => {
-        const div = $("<div>")
-          .text(recette.nom)
-          .addClass("suggestion-item")
-          .css("cursor", "pointer")
-          .on("click", function () {
-            searchInput.val(recette.nom);
-            suggestionsBox.empty();
-            openRecipeModal(recette);
-          });
-        suggestionsBox.append(div);
+        suggestionsBox.append(
+          $(`<div class="suggestion-item">${recette.nom}</div>`).on(
+            "click",
+            () => {
+              searchInput.val(recette.nom);
+              suggestionsBox.empty();
+              openRecipeModal(recette);
+            }
+          )
+        );
       });
-    } catch (error) {
-      console.error("Erreur de recherche:", error);
-      suggestionsBox.html(
-        '<div class="text-danger">Erreur de chargement</div>'
-      );
+    }
+  });
+
+  // Fermer les suggestions quand on clique ailleurs
+  $(document).on("click", (e) => {
+    if (!$(e.target).closest(".autocomplete").length) {
+      suggestionsBox.empty();
     }
   });
 }
