@@ -1,137 +1,263 @@
 $(document).ready(function () {
+  console.log("Document prêt - Initialisation");
   initApp();
 });
 
 // Initialisation globale de l'application
-function initApp() {
-  loadRecipes();
-  afficherRecettesAleatoires();
-  gererRecherche();
-}
-
-// Chargement des recettes pour le menu déroulant
-function loadRecipes() {
-  fetch("data/data.json")
-    .then((response) => response.json())
-    .then((data) => {
-      const $recipeList = $("#recipes-list");
-
-      // Titre de la section
-      $recipeList.append(
-        $("<p>")
-          .addClass(
-            "list-group list-group-flush list-group-item-action text-uppercase fw-bold"
-          )
-          .text("Toutes les recettes")
-      );
-
-      // Vérification et affichage des recettes
-      if (data.recettes && Array.isArray(data.recettes)) {
-        data.recettes.forEach((recette) => {
-          $recipeList.append(
-            $("<a>")
-              .addClass("mb-0 list-group-item list-group-item-action")
-              .attr(
-                "href",
-                `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
-              )
-              .text(recette.nom)
-          );
-        });
-      } else {
-        console.error("Format JSON invalide.");
-      }
-    })
-    .catch((error) => {
-      console.error("Erreur lors de la récupération des recettes:", error);
-    });
-}
-
-// Fonction pour charger les recettes depuis le fichier JSON
-async function chargerRecettes() {
+async function initApp() {
   try {
-    const response = await fetch("data/data.json");
-    const data = await response.json();
-    return data.recettes || [];
+    console.log("Initialisation en cours...");
+    await loadRecipes();
+    await afficherRecettesAleatoires();
+    initFavorisButtons();
+    updateMegaMenu();
+    console.log("Initialisation terminée avec succès");
   } catch (error) {
-    console.error("Erreur de chargement des recettes :", error);
-    return [];
+    console.error("Erreur d'initialisation:", error);
+    showErrorToUser();
   }
 }
 
-// Mélanger un tableau aléatoirement
-function melangerTableau(tableau) {
-  return tableau.sort(() => Math.random() - 0.5);
+function showErrorToUser() {
+  $("#cartes-recettes").html(`
+    <div class="alert alert-danger">
+      Une erreur est survenue lors du chargement des recettes.
+    </div>
+  `);
 }
 
-// Affichage des recettes aléatoires sur la page d'accueil
+// Chargement des recettes pour le menu
+async function loadRecipes() {
+  try {
+    console.log("Chargement des recettes...");
+    const response = await fetch("data/data.json");
+    if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+
+    const data = await response.json();
+    const $recipeList = $("#recipes-list");
+    $recipeList.empty();
+
+    // Titre
+    $recipeList.append(
+      $("<p>")
+        .addClass("list-group-item text-uppercase fw-bold")
+        .text("Toutes les recettes")
+    );
+
+    // Items
+    data.recettes.forEach((recette) => {
+      $recipeList.append(
+        $("<a>")
+          .addClass("list-group-item list-group-item-action")
+          .attr(
+            "href",
+            `pages/recipe.html?nom=${encodeURIComponent(recette.nom)}`
+          )
+          .text(recette.nom)
+      );
+    });
+  } catch (error) {
+    console.error("Erreur loadRecipes:", error);
+    $("#recipes-list").html(
+      '<p class="text-danger">Erreur de chargement des recettes</p>'
+    );
+  }
+}
+
+// Affichage des recettes aléatoires
 async function afficherRecettesAleatoires() {
-  const recettes = await chargerRecettes();
-  const recettesSelectionnees = melangerTableau([...recettes]).slice(0, 3);
-  const container = $("#cartes-recettes");
+  try {
+    console.log("Génération des cartes aléatoires...");
+    const response = await fetch("data/data.json");
+    const data = await response.json();
+    const recettes = data.recettes;
 
-  container.empty(); // Vide le conteneur
+    const shuffled = [...recettes].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
 
-  recettesSelectionnees.forEach((recette) => {
-    const card = `
-      <div class="card" style="width: 18rem;">
-        <div class="card-header bg-transparent">
-          <span class="badge bg-secondary">${recette.categorie}</span>
-          <span class="badge bg-light text-dark ms-2">${
-            recette.temps_preparation
-          }</span>
+    const $container = $("#cartes-recettes");
+    $container.empty();
+
+    selected.forEach((recette) => {
+      const isFavori = (JSON.parse(localStorage.getItem("favoris")) || []).some(
+        (f) => f.nom === recette.nom
+      );
+
+      // Gestion des ingrédients (supporte les deux formats)
+      const ingredients = Array.isArray(recette.ingredients)
+        ? recette.ingredients.map((i) =>
+            typeof i === "string" ? i : i.nom || ""
+          )
+        : [];
+
+      // Correction du chemin des images
+      let imagePath = recette.images;
+      if (imagePath.startsWith("../")) {
+        imagePath = imagePath.substring(3);
+      }
+
+      const cardHTML = `
+        <div class="card" style="width: 18rem;">
+          <div class="card-header d-flex justify-content-between">
+            <div>
+              <span class="badge bg-secondary">${
+                recette.categorie || "Non classé"
+              }</span>
+              <span class="badge bg-light text-dark ms-2">${
+                recette.temps_preparation || "N/A"
+              }</span>
+            </div>
+            <button class="btn-favori ${isFavori ? "active" : ""}" data-nom="${
+        recette.nom
+      }">
+              ${isFavori ? "♥" : "♡"}
+            </button>
+          </div>
+          <div class="card-body">
+            <img src="${imagePath}" class="card-img-top" alt="${
+        recette.nom
+      }" style="height: 180px; object-fit: cover;">
+            <h5 class="card-title mt-2">${recette.nom}</h5>
+            <p class="card-text">${ingredients.slice(0, 3).join(", ")}...</p>
+            <button class="btn btn-primary btn-voir-recette" data-recipe='${JSON.stringify(
+              recette
+            )}'>
+              Voir la recette
+            </button>
+          </div>
         </div>
-        <div class="card-body">
-         <img src="${recette.images}" class="card-img-top" alt="${recette.nom}">
-          <h5 class="card-title">${recette.nom}</h5>
-          <p class="card-text">${recette.ingredients
-            .slice(0, 3)
-            .map((i) => i.nom || i)
-            .join(", ")}...</p>
-          <a href="pages/recipe.html?nom=${encodeURIComponent(
-            recette.nom
-          )}" class="btn btn-primary">Voir la recette</a>
-        </div>
+      `;
+      $container.append(cardHTML);
+    });
+  } catch (error) {
+    console.error("Erreur afficherRecettesAleatoires:", error);
+    $("#cartes-recettes").html(`
+      <div class="alert alert-warning">
+        Impossible de charger les recettes aléatoires
       </div>
-    `;
-    container.append(card);
+    `);
+  }
+}
+
+// Initialisation des boutons favoris
+function initFavorisButtons() {
+  $(document).on("click", ".btn-favori", function () {
+    const card = $(this).closest(".card");
+    const recetteData = {
+      nom: card.find(".card-title").text(),
+      categorie: card.find(".badge:first").text(),
+      images: card.find("img").attr("src"),
+      temps_preparation: card.find(".badge:last").text().trim(),
+      ingredients: JSON.parse(card.find(".btn-voir-recette").data("recipe"))
+        .ingredients,
+    };
+
+    toggleFavori(recetteData);
+    $(this).toggleClass("active");
+    $(this).html($(this).hasClass("active") ? "♥" : "♡");
+    updateMegaMenu();
   });
 }
 
-// Gestion de la barre de recherche et des suggestions
-async function gererRecherche() {
-  const searchInput = document.querySelector(".navbar #search"); // Si la barre est dans la navbar
-  const suggestionsBox = document.querySelector(".navbar #suggestions");
+// Gestion des favoris
+function toggleFavori(recette) {
+  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+  const index = favoris.findIndex((f) => f.nom === recette.nom);
 
-  if (!searchInput || !suggestionsBox) {
-    console.error(
-      "Les éléments de recherche ou de suggestions sont introuvables."
+  if (index === -1) {
+    favoris.push(recette);
+  } else {
+    favoris.splice(index, 1);
+  }
+
+  localStorage.setItem("favoris", JSON.stringify(favoris));
+}
+
+// Mise à jour du méga menu
+function updateMegaMenu() {
+  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+  const $favoritesList = $("#favorites-list");
+
+  $favoritesList.empty();
+
+  // Titre
+  $favoritesList.append(
+    $("<a>")
+      .addClass("list-group-item text-uppercase fw-bold")
+      .attr("href", "pages/favorites.html")
+      .text("Mes recettes favorites")
+  );
+
+  if (favoris.length === 0) {
+    $favoritesList.append(
+      $("<div>")
+        .addClass("list-group-item text-muted")
+        .text("Aucune recette favorite")
     );
     return;
   }
 
-  const recettes = await chargerRecettes();
-
-  searchInput.addEventListener("input", function () {
-    const query = this.value.toLowerCase();
-    suggestionsBox.innerHTML = "";
-
-    if (query.length === 0) return;
-
-    const filteredRecettes = recettes.filter((recette) =>
-      recette.nom.toLowerCase().includes(query)
+  favoris.forEach((fav) => {
+    $favoritesList.append(
+      $("<a>")
+        .addClass("list-group-item list-group-item-action")
+        .attr("href", "#")
+        .data("recipe", JSON.stringify(fav))
+        .text(fav.nom)
+        .on("click", function (e) {
+          e.preventDefault();
+          openRecipeModal(fav);
+        })
     );
-
-    filteredRecettes.forEach((recette) => {
-      const div = document.createElement("div");
-      div.textContent = recette.nom;
-      div.classList.add("suggestion-item"); // Ajout d'une classe pour le styling
-      div.style.cursor = "pointer"; // Rendre cliquable
-      div.addEventListener("click", function () {
-        searchInput.value = recette.nom;
-        suggestionsBox.innerHTML = ""; // Efface les suggestions
-      });
-      suggestionsBox.appendChild(div);
-    });
   });
 }
+
+// Ouverture du modal
+function openRecipeModal(recette) {
+  try {
+    // Gestion des ingrédients
+    const ingredients = Array.isArray(recette.ingredients)
+      ? recette.ingredients
+          .map((i) => {
+            if (typeof i === "string") return i;
+            if (i.nom) return `${i.nom} ${i.quantite || ""}`.trim();
+            return "";
+          })
+          .filter(Boolean)
+      : [];
+
+    // Correction du chemin de l'image
+    let imagePath = recette.images;
+    if (imagePath.startsWith("../")) {
+      imagePath = imagePath.substring(3);
+    }
+
+    // Mise à jour du modal
+    $("#recipeModal #recipe-name").text(recette.nom || "Recette sans nom");
+    $("#recipeModal #recipe-category").text(
+      `Catégorie: ${recette.categorie || "Non spécifiée"}`
+    );
+    $("#recipeModal #recipe-prep-time").text(
+      `Temps: ${recette.temps_preparation || "Non spécifié"}`
+    );
+    $("#recipeModal #recipe-image").attr("src", imagePath);
+    $("#recipeModal #recipe-ingredients").html(
+      ingredients.map((i) => `<li>${i}</li>`).join("") ||
+        "Aucun ingrédient spécifié"
+    );
+
+    const modal = new bootstrap.Modal(document.getElementById("recipeModal"));
+    modal.show();
+  } catch (error) {
+    console.error("Erreur openRecipeModal:", error);
+    window.location.href = `pages/recipe.html?nom=${encodeURIComponent(
+      recette.nom
+    )}`;
+  }
+}
+
+// Gestionnaire pour les boutons "Voir recette"
+$(document).on("click", ".btn-voir-recette", function () {
+  const recipeData = JSON.parse($(this).data("recipe"));
+  openRecipeModal(recipeData);
+});
