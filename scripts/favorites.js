@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function displayFavorites() {
   const container = document.getElementById("favorisContainer");
-  const emptyMsg = document.getElementById("empty-message");
+  const emptyMsg = document.getElementById("empty-message") || { style: {} };
 
   if (!emptyMsg) {
     console.error("L'élément 'empty-message' n'a pas été trouvé dans le DOM.");
