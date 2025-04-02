@@ -11,6 +11,7 @@ async function initApp() {
     await afficherRecettesAleatoires();
     initFavorisButtons();
     updateMegaMenu();
+    gererRecherche();
     console.log("Initialisation terminée avec succès");
   } catch (error) {
     console.error("Erreur d'initialisation:", error);
@@ -83,7 +84,7 @@ async function afficherRecettesAleatoires() {
         (f) => f.nom === recette.nom
       );
 
-      // Gestion des ingrédients (supporte les deux formats)
+      // Gestion des ingrédients
       const ingredients = Array.isArray(recette.ingredients)
         ? recette.ingredients.map((i) =>
             typeof i === "string" ? i : i.nom || ""
@@ -91,10 +92,7 @@ async function afficherRecettesAleatoires() {
         : [];
 
       // Correction du chemin des images
-      let imagePath = recette.images;
-      if (imagePath.startsWith("../")) {
-        imagePath = imagePath.substring(3);
-      }
+      let imagePath = fixImagePath(recette.images);
 
       const cardHTML = `
         <div class="card" style="width: 18rem;">
@@ -137,6 +135,12 @@ async function afficherRecettesAleatoires() {
       </div>
     `);
   }
+}
+
+// Helper function pour corriger les chemins d'images
+function fixImagePath(path) {
+  if (!path) return "";
+  return path.startsWith("../") ? path.substring(3) : path;
 }
 
 // Initialisation des boutons favoris
@@ -212,6 +216,55 @@ function updateMegaMenu() {
   });
 }
 
+// Gestion de la recherche
+function gererRecherche() {
+  const searchInput = $("#search");
+  const suggestionsBox = $("#suggestions");
+
+  // Nouveau: Charger les recettes une seule fois au démarrage
+  let allRecipes = [];
+
+  // Chargement initial des données
+  fetch("data/data.json")
+    .then((response) => response.json())
+    .then((data) => {
+      allRecipes = data.recettes;
+    })
+    .catch((error) => console.error("Erreur chargement recettes:", error));
+
+  searchInput.on("input", function () {
+    const query = $(this).val().toLowerCase().trim();
+    suggestionsBox.empty(); // Reset à chaque input
+
+    if (query.length >= 1) {
+      // Modification clé: 1 caractère suffit
+      const filtered = allRecipes.filter((recette) =>
+        recette.nom.toLowerCase().includes(query)
+      );
+
+      filtered.slice(0, 5).forEach((recette) => {
+        suggestionsBox.append(
+          $(`<div class="suggestion-item">${recette.nom}</div>`).on(
+            "click",
+            () => {
+              searchInput.val(recette.nom);
+              suggestionsBox.empty();
+              openRecipeModal(recette);
+            }
+          )
+        );
+      });
+    }
+  });
+
+  // Fermer les suggestions quand on clique ailleurs
+  $(document).on("click", (e) => {
+    if (!$(e.target).closest(".autocomplete").length) {
+      suggestionsBox.empty();
+    }
+  });
+}
+
 // Ouverture du modal
 function openRecipeModal(recette) {
   try {
@@ -227,10 +280,7 @@ function openRecipeModal(recette) {
       : [];
 
     // Correction du chemin de l'image
-    let imagePath = recette.images;
-    if (imagePath.startsWith("../")) {
-      imagePath = imagePath.substring(3);
-    }
+    let imagePath = fixImagePath(recette.images);
 
     // Mise à jour du modal
     $("#recipeModal #recipe-name").text(recette.nom || "Recette sans nom");
@@ -245,6 +295,15 @@ function openRecipeModal(recette) {
       ingredients.map((i) => `<li>${i}</li>`).join("") ||
         "Aucun ingrédient spécifié"
     );
+
+    // Ajout des étapes de préparation si elles existent
+    if (recette.etapes_preparation) {
+      $("#recipeModal #recipe-steps").html(
+        recette.etapes_preparation.map((step, i) => `<li>${step}</li>`).join("")
+      );
+    } else {
+      $("#recipeModal #recipe-steps").html("<li>Aucune étape spécifiée</li>");
+    }
 
     const modal = new bootstrap.Modal(document.getElementById("recipeModal"));
     modal.show();
