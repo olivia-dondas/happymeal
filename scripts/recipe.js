@@ -38,7 +38,6 @@ function displayRecipeCards(recipes) {
     $container.html(
       '<div class="alert alert-info">Aucune recette disponible</div>'
     );
-<<<<<<< HEAD
 }
 
 // Charger les recettes depuis le fichier JSON
@@ -186,9 +185,6 @@ async function loadRecipes() {
     displayPaginatedRecipes();
   } catch (error) {
     console.error("Erreur lors du chargement des recettes :", error);
-=======
-    return;
->>>>>>> 024cca57f92f20be4dc0d62b855b4a308c31e025
   }
 
   $container.append(
