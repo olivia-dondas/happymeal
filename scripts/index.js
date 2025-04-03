@@ -221,7 +221,7 @@ function gererRecherche() {
   const searchInput = $("#search");
   const suggestionsBox = $("#suggestions");
 
-  // Nouveau: Charger les recettes une seule fois au démarrage
+  // Charger les recettes une seule fois au démarrage
   let allRecipes = [];
 
   // Chargement initial des données
