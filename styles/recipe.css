@@ -43,9 +43,7 @@
 .entrée button:hover {
   background-color: #505050;
   box-shadow: #b43232;
-
 }
-
 
 .title {
   font-size: 30px;
@@ -95,4 +93,34 @@ h3 {
 }
 .pagination button:hover {
   background-color: #505050;
+}
+/* Bouton favori */
+.btn-favorite {
+  background: transparent !important; /* Fond totalement transparent */
+  border: none !important; /* Suppression totale de la bordure */
+  color: #db6327;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: auto; /* Suppression de la largeur fixe */
+  height: auto; /* Suppression de la hauteur fixe */
+  padding: 0.25rem !important; /* Réduction maximale du padding */
+  margin: 0;
+  line-height: 1;
+  outline: none !important; /* Suppression du contour au focus */
+}
+
+.btn-favorite.active {
+  color: red;
+}
+
+.btn-favorite:hover {
+  transform: scale(1.2);
+  color: darkred;
+  background: transparent !important; /* Maintien de la transparence au survol */
+}
+
+/* Suppression du rectangle bleu au clic sur mobile */
+.btn-favorite:active {
+  -webkit-tap-highlight-color: transparent;
 }
