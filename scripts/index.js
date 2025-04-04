@@ -115,8 +115,9 @@ async function afficherRecettesAleatoires() {
       }).replace(/"/g, "'"); // Remplace les guillemets doubles par simples
 
       const cardHTML = `
+      <div class="col-sm-10 col-lg-4 mb-3 justify-content-center"> 
         <div class="card" style="width: 18rem;">
-          <div class="card-header d-flex justify-content-between">
+          <div class="card-header d-flex justify-content-center">
             <div>
               <span class="badge bg-secondary">${
                 recette.categorie || "Non classé"
@@ -148,7 +149,7 @@ async function afficherRecettesAleatoires() {
     </button>
 
 </div>
-          </div>
+          
         </div>
       `;
       $container.append(cardHTML);
@@ -163,6 +164,8 @@ async function afficherRecettesAleatoires() {
     `);
   }
 }
+const $container = $("#cartes-recettes");
+$container.empty().addClass("row justify-content-center");
 
 // Correction des chemins d'images
 function fixImagePath(path) {
