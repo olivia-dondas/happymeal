@@ -1,3 +1,8 @@
+// Configuration du chemin de base
+const BASE_PATH = window.location.pathname.includes("happyMeal")
+  ? "/happymeal/"
+  : "/";
+
 $(document).ready(function () {
   console.log("Document prêt - Initialisation");
   initApp();
@@ -9,6 +14,7 @@ async function initApp() {
     console.log("Initialisation en cours...");
     await loadRecipes();
     await afficherRecettesAleatoires();
+    initViewRecipeButtons(); // Nouvelle fonction séparée
     initFavorisButtons();
     updateMegaMenu();
     gererRecherche();
@@ -18,6 +24,14 @@ async function initApp() {
     showErrorToUser();
   }
 }
+$(document).on("click", ".btn-voir-recette", function () {
+  try {
+    const recipeData = JSON.parse($(this).data("recipe"));
+    openRecipeModal(recipeData);
+  } catch (e) {
+    console.error("Erreur:", e);
+  }
+});
 
 function showErrorToUser() {
   $("#cartes-recettes").html(`
@@ -30,34 +44,37 @@ function showErrorToUser() {
 // Chargement des recettes pour le menu
 async function loadRecipes() {
   try {
-    console.log("Chargement des recettes...");
     const response = await fetch("data/data.json");
-    if (!response.ok) throw new Error("Erreur HTTP " + response.status);
-
     const data = await response.json();
     const $recipeList = $("#recipes-list");
     $recipeList.empty();
 
-    // Titre
     $recipeList.append(
-      // Titre cliquable
       $("<a>")
         .addClass("list-group-item text-uppercase fw-bold")
         .attr("href", "pages/recipe.html")
-        .text("Toutes les recettes"),
+        .text("Toutes les recettes")
+    );
 
-      // Items (ouvrent le modal)
-      ...data.recettes.map((recette) =>
+    data.recettes.forEach((recette) => {
+      $recipeList.append(
         $("<a>")
           .addClass("list-group-item list-group-item-action")
           .attr("href", "#")
+          .data(
+            "recipe",
+            JSON.stringify({
+              ...recette,
+              images: recette.images,
+            })
+          )
+          .text(recette.nom)
           .on("click", function (e) {
             e.preventDefault();
-            openRecipeModal(recette);
+            openRecipeModal(JSON.parse($(this).data("recipe")));
           })
-          .text(recette.nom)
-      )
-    );
+      );
+    });
   } catch (error) {
     console.error("Erreur loadRecipes:", error);
     $("#recipes-list").html(
@@ -85,19 +102,22 @@ async function afficherRecettesAleatoires() {
         (f) => f.nom === recette.nom
       );
 
-      // Gestion des ingrédients
       const ingredients = Array.isArray(recette.ingredients)
         ? recette.ingredients.map((i) =>
             typeof i === "string" ? i : i.nom || ""
           )
         : [];
 
-      // Correction du chemin des images
-      let imagePath = fixImagePath(recette.images);
+      // Sérialisation sécurisée
+      const safeRecipeData = JSON.stringify({
+        ...recette,
+        images: recette.images || "", // Garantit que images existe
+      }).replace(/"/g, "'"); // Remplace les guillemets doubles par simples
 
       const cardHTML = `
+      <div class="col-sm-10 col-lg-4 mb-3 justify-content-center"> 
         <div class="card" style="width: 18rem;">
-          <div class="card-header d-flex justify-content-between">
+          <div class="card-header d-flex justify-content-center">
             <div>
               <span class="badge bg-secondary">${
                 recette.categorie || "Non classé"
@@ -113,37 +133,72 @@ async function afficherRecettesAleatoires() {
             </button>
           </div>
           <div class="card-body">
-            <img src="${imagePath}" class="card-img-top" alt="${
+            <img src="${fixImagePath(
+              recette.images
+            )}" class="card-img-top" alt="${
         recette.nom
       }" style="height: 180px; object-fit: cover;">
-            <h5 class="card-title mt-2">${recette.nom}</h5>
-            <p class="card-text">${ingredients.slice(0, 3).join(", ")}...</p>
-            <button class="btn btn-primary btn-voir-recette" data-recipe='${JSON.stringify(
-              recette
-            )}'>
-              Voir la recette
-            </button>
-          </div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">${recette.nom}</h5>
+              <p class="card-text text-muted flex-grow-1">
+                ${ingredients.slice(0, 3).join(", ")}...
+              </p>
+        <button class="btn btn-outline-primary btn-voir-recette mt-auto" 
+            data-recipe='${safeRecipeData}'>
+      Voir la recette
+    </button>
+
+</div>
+          
         </div>
       `;
       $container.append(cardHTML);
     });
   } catch (error) {
-    console.error("Erreur afficherRecettesAleatoires:", error);
+    console.error("Erreur:", error);
     $("#cartes-recettes").html(`
       <div class="alert alert-warning">
-        Impossible de charger les recettes aléatoires
+        <i class="bi bi-exclamation-triangle"></i>
+        Impossible de charger les recettes. Veuillez réessayer.
       </div>
     `);
   }
 }
+const $container = $("#cartes-recettes");
+$container.empty().addClass("row justify-content-center");
 
-// Helper function pour corriger les chemins d'images
+// Correction des chemins d'images
 function fixImagePath(path) {
   if (!path) return "";
   return path.startsWith("../") ? path.substring(3) : path;
 }
 
+// Initialisation des boutons "Voir recette" (NOUVEAU)
+
+function initViewRecipeButtons() {
+  $(document).on("click", ".btn-voir-recette", function () {
+    try {
+      const rawData = $(this).attr("data-recipe"); // Utilisez attr() au lieu de data()
+      if (!rawData) throw new Error("Aucune donnée de recette trouvée");
+
+      const recipeData = JSON.parse(rawData);
+      if (!recipeData) throw new Error("Parsing a échoué");
+
+      openRecipeModal(recipeData);
+    } catch (e) {
+      console.error("Erreur:", e);
+      // Fallback avec les données visibles de la carte
+      const card = $(this).closest(".card");
+      openRecipeModal({
+        nom: card.find(".card-title").text(),
+        categorie: card.find(".badge.bg-secondary").text(),
+        temps_preparation: card.find(".badge.bg-light").text(),
+        ingredients: [],
+        etapes: [],
+      });
+    }
+  });
+}
 // Initialisation des boutons favoris
 function initFavorisButtons() {
   $(document).on("click", ".btn-favori", function () {
@@ -179,52 +234,60 @@ function toggleFavori(recette) {
 }
 
 // Mise à jour du méga menu
-function updateMegaMenu() {
-  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-  const $favoritesList = $("#favorites-list").empty();
+async function updateMegaMenu() {
+  try {
+    const response = await fetch("data/data.json");
+    const data = await response.json();
+    const $favoriteslist = $("#favorites-list");
+    const favoris = JSON.parse(localStorage.getItem("favoris") || "[]");
 
-  // 1. Titre cliquable
-  $favoritesList.append(
-    $("<a>")
-      .addClass("list-group-item text-uppercase fw-bold")
-      .attr("href", "pages/favorites.html")
-      .text("Mes recettes favorites")
-  );
-
-  // 2. Contenu
-  if (favoris.length === 0) {
-    $favoritesList.append(
-      $("<div>")
-        .addClass("list-group-item text-muted")
-        .text("Aucune recette favorite")
-    );
-  } else {
-    favoris.forEach((fav) => {
-      $favoritesList.append(
+    // On vide la liste et on ajoute le titre
+    $favoriteslist
+      .empty()
+      .append(
         $("<a>")
-          .addClass("list-group-item list-group-item-action")
+          .addClass("list-group-item text-uppercase fw-bold")
+          .attr("href", "pages/favorites.html")
+          .text("Mes recettes favorites")
+      );
+
+    // Si pas de favoris
+    if (favoris.length === 0) {
+      $favoriteslist.append(
+        $('<a class="list-group-item text-muted">Aucun favori</a>')
+      );
+      return;
+    }
+
+    // Ajout des favoris
+    favoris.forEach((fav) => {
+      const completeRecipe = data.recettes.find((r) => r.nom === fav.nom) || {
+        ...fav,
+        ingredients: [],
+        etapes: [],
+      };
+
+      $favoriteslist.append(
+        $('<a class="list-group-item list-group-item-action"></a>')
           .attr("href", "#")
-          .data("recipe", JSON.stringify(fav))
-          .text(fav.nom)
-          .on("click", function (e) {
+          .data("recipe", JSON.stringify(completeRecipe))
+          .text(completeRecipe.nom)
+          .on("click", (e) => {
             e.preventDefault();
-            const recipeData = JSON.parse($(this).data("recipe"));
-            openRecipeModal(recipeData);
+            openRecipeModal(completeRecipe);
           })
       );
     });
+  } catch (error) {
+    console.error("Erreur updateMegaMenu:", error);
   }
 }
-
 // Gestion de la recherche
 function gererRecherche() {
   const searchInput = $("#search");
   const suggestionsBox = $("#suggestions");
-
-  // Charger les recettes une seule fois au démarrage
   let allRecipes = [];
 
-  // Chargement initial des données
   fetch("data/data.json")
     .then((response) => response.json())
     .then((data) => {
@@ -234,10 +297,9 @@ function gererRecherche() {
 
   searchInput.on("input", function () {
     const query = $(this).val().toLowerCase().trim();
-    suggestionsBox.empty(); // Reset à chaque input
+    suggestionsBox.empty();
 
     if (query.length >= 1) {
-      // Modification clé: 1 caractère suffit
       const filtered = allRecipes.filter((recette) =>
         recette.nom.toLowerCase().includes(query)
       );
@@ -257,7 +319,6 @@ function gererRecherche() {
     }
   });
 
-  // Fermer les suggestions quand on clique ailleurs
   $(document).on("click", (e) => {
     if (!$(e.target).closest(".autocomplete").length) {
       suggestionsBox.empty();
@@ -266,78 +327,108 @@ function gererRecherche() {
 }
 
 // Ouverture du modal
-function openRecipeModal(recette) {
-  try {
-    // Gestion des ingrédients
-    const ingredients = Array.isArray(recette.ingredients)
-      ? recette.ingredients
-          .map((i) => {
-            if (typeof i === "string") return i;
-            if (i.nom) return `${i.nom} ${i.quantite || ""}`.trim();
-            return "";
-          })
-          .filter(Boolean)
-      : [];
-
-    // Correction du chemin de l'image
-    let imagePath = fixImagePath(recette.images);
-
-    // Mise à jour du modal
-    $("#recipeModal #recipe-name").text(recette.nom || "Recette sans nom");
-    $("#recipeModal #recipe-category").text(
-      `Catégorie: ${recette.categorie || "Non spécifiée"}`
-    );
-    $("#recipeModal #recipe-prep-time").text(
-      `Temps: ${recette.temps_preparation || "Non spécifié"}`
-    );
-    $("#recipeModal #recipe-image").attr("src", imagePath);
-    $("#recipeModal #recipe-ingredients").html(
-      ingredients.map((i) => `<li>${i}</li>`).join("") ||
-        "Aucun ingrédient spécifié"
-    );
-
-    // Ajout des étapes de préparation si elles existent
-    if (recette.etapes_preparation) {
-      $("#recipeModal #recipe-steps").html(
-        recette.etapes_preparation.map((step, i) => `<li>${step}</li>`).join("")
-      );
-    } else {
-      $("#recipeModal #recipe-steps").html("<li>Aucune étape spécifiée</li>");
-    }
-
-    const modal = new bootstrap.Modal(document.getElementById("recipeModal"));
-    modal.show();
-  } catch (error) {
-    console.error("Erreur openRecipeModal:", error);
-    window.location.href = `pages/recipe.html?nom=${encodeURIComponent(
-      recette.nom
-    )}`;
+function openRecipeModal(recipe) {
+  if (!recipe) {
+    console.error("Aucune donnée de recette reçue");
+    return;
   }
+
+  const safeRecipe = {
+    nom: recipe.nom || "Recette sans nom",
+    images: recipe.images || "",
+    categorie: recipe.categorie || "Non spécifié",
+    temps_preparation: recipe.temps_preparation || "N/A",
+    ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+    etapes: Array.isArray(recipe.etapes) ? recipe.etapes : [],
+  };
+
+  // Gestion des chemins d'images
+  function getImagePath(img) {
+    // Vérification complète de l'input
+    if (!img || typeof img !== "string") return "";
+
+    // Gestion des chemins
+    if (img.startsWith("http")) return img;
+    if (img.startsWith("assets/")) return img;
+
+    return `assets/img_recipes/${img}`;
+  }
+
+  // Mise à jour du modal
+  $("#recipeTitle").text(safeRecipe.nom);
+  $("#recipeImage").attr("src", getImagePath(safeRecipe.images)).show();
+  $("#recipeCategory").text(safeRecipe.categorie);
+  $("#recipeTime").text(safeRecipe.temps_preparation);
+
+  // Ingrédients formatés
+  const formatIngredient = (i) =>
+    typeof i === "string" ? i : `${i.nom} ${i.quantite || ""}`.trim();
+
+  const ingredients = Array.isArray(recipe.ingredients)
+    ? recipe.ingredients.map(formatIngredient).filter(Boolean)
+    : [];
+
+  $("#recipeIngredients").html(
+    ingredients
+      .map(
+        (i) => `
+      <li class="d-flex align-items-start mb-2">
+        <span class="bullet me-2 text-primary">•</span>
+        <span>${i}</span>
+      </li>
+    `
+      )
+      .join("") || "<li>Aucun ingrédient spécifié</li>"
+  );
+
+  // Étapes formatées
+  const steps = Array.isArray(recipe.etapes)
+    ? recipe.etapes
+    : ["Aucune étape spécifiée"];
+
+  $("#recipeSteps").html(
+    steps
+      .map(
+        (step, i) => `
+      <li class="mb-3">
+        <strong>Étape ${i + 1}:</strong>
+        <span class="d-block mt-1">${step}</span>
+      </li>
+    `
+      )
+      .join("")
+  );
+
+  // Affichage du modal
+  new bootstrap.Modal("#recipeModal").show();
 }
 
-// Gestionnaire pour les boutons "Voir recette"
-$(document).on("click", ".btn-voir-recette", function () {
-  try {
-    // Récupère et nettoie les données
-    const recipeStr = $(this)
-      .data("recipe")
-      .replace(/\\"/g, '"') // Restaure les guillemets
-      .replace(/\\'/g, "'") // Restaure les apostrophes
-      .replace(/\\n/g, "\n"); // Restaure les sauts de ligne
+// Modification de initViewRecipeButtons()
+function initViewRecipeButtons() {
+  $(document).on("click", ".btn-voir-recette", function () {
+    try {
+      let recipeData;
+      const rawData = $(this).data("recipe");
 
-    const recipeData = JSON.parse(recipeStr);
-    openRecipeModal(recipeData);
-  } catch (e) {
-    console.error("Erreur parsing des données :", e);
+      // Gestion des deux formats de données (string ou déjà parsé)
+      if (typeof rawData === "string") {
+        recipeData = JSON.parse(rawData);
+      } else {
+        recipeData = rawData;
+      }
 
-    // Solution de repli SANS redirection
-    const card = $(this).closest(".card");
-    const fallbackData = {
-      nom: card.find(".card-title").text(),
-      categorie: card.find(".badge.bg-secondary").text(),
-      ingredients: [],
-      temps_preparation: card.find(".badge.bg-light").text(),
-    };
-    openRecipeModal(fallbackData);
-  }
-});
+      console.log("Data recette:", recipeData);
+      openRecipeModal(recipeData);
+    } catch (e) {
+      console.error("Erreur parsing:", e);
+      const card = $(this).closest(".card");
+      openRecipeModal({
+        nom: card.find(".card-title").text(),
+        categorie: card.find(".badge.bg-secondary").text(),
+        temps_preparation: card.find(".badge.bg-light").text(),
+        ingredients: [],
+        etapes: [],
+      });
+    }
+  });
+}
