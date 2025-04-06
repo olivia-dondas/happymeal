@@ -1,0 +1,126 @@
+.tout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.entrée {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.entrée img {
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.entrée h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.entrée button {
+  padding: 10px 20px;
+  background-color: #313131;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.entrée img:hover {
+  box-shadow: #121111;
+}
+
+.entrée button:hover {
+  background-color: #505050;
+  box-shadow: #b43232;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #121111;
+  text-align: center;
+  margin-top: 20px;
+}
+.de {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.de img {
+  width: 200px;
+  height: 200px;
+  border-radius: 20%;
+  gap: 10px;
+  padding: 10px;
+}
+.de:hover img {
+  box-shadow: #fff7f7 0px 10px 50px;
+}
+h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #181717;
+  text-align: center;
+  margin-top: 20px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+.pagination button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #313131;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: wrap;
+}
+.pagination button:hover {
+  background-color: #505050;
+}
+/* Bouton favori */
+.btn-favorite {
+  background: transparent !important; /* Fond totalement transparent */
+  border: none !important; /* Suppression totale de la bordure */
+  color: #db6327;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: auto; /* Suppression de la largeur fixe */
+  height: auto; /* Suppression de la hauteur fixe */
+  padding: 0.25rem !important; /* Réduction maximale du padding */
+  margin: 0;
+  line-height: 1;
+  outline: none !important; /* Suppression du contour au focus */
+}
+
+.btn-favorite.active {
+  color: red;
+}
+
+.btn-favorite:hover {
+  transform: scale(1.2);
+  color: darkred;
+  background: transparent !important; /* Maintien de la transparence au survol */
+}
+
+/* Suppression du rectangle bleu au clic sur mobile */
+.btn-favorite:active {
+  -webkit-tap-highlight-color: transparent;
+}

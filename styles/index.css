@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://use.typekit.net/lqe4gxu.css");
+
+.video-hero {
+  height: 70vh;
+  overflow: hidden;
+}
+.video-hero video {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+.hero-content {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  width: 80%;
+}
+.video-overlay {
+  font-family: "lato", sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.video-title {
+  font-family: "westgate", sans-serif;
+  font-weight: bold;
+  color: #db6327;
+  font-size: 40rem; /* Taille par défaut pour les grands écrans */
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.video-text {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.video-buttons .btn {
+  margin: 10px;
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  letter-spacing: 1.2px;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .video-title {
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+  }
+}
+
+/* Pour un espacement harmonieux */
+#cartes-recettes {
+  padding: 20px 0;
+}
+
+/* Pour les cartes */
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
