@@ -144,9 +144,11 @@ async function afficherRecettesAleatoires() {
                 ${ingredients.slice(0, 3).join(", ")}...
               </p>
         <button class="btn btn-outline-primary btn-voir-recette mt-auto" 
-            data-recipe='${safeRecipeData}'>
-      Voir la recette
-    </button>
+          data-recipe='${JSON.stringify(recette).replace(/'/g, "&apos;")}'
+          onclick="event.preventDefault(); openRecipeModal($(this).data('recipe'));">
+    Voir la recette
+  </button>
+
 
 </div>
           
@@ -176,28 +178,42 @@ function fixImagePath(path) {
 // Initialisation des boutons "Voir recette" (NOUVEAU)
 
 function initViewRecipeButtons() {
-  $(document).on("click", ".btn-voir-recette", function () {
-    try {
-      const rawData = $(this).attr("data-recipe"); // Utilisez attr() au lieu de data()
-      if (!rawData) throw new Error("Aucune donnée de recette trouvée");
+  // Gestionnaire unique pour tous les éléments ouvrant un modal
+  $(document).on(
+    "click",
+    ".btn-voir-recette, .list-group-item[data-recipe], .suggestion-item .list-group-item",
+    function (e) {
+      e.preventDefault();
 
-      const recipeData = JSON.parse(rawData);
-      if (!recipeData) throw new Error("Parsing a échoué");
+      // Récupération des données de la recette
+      let recipeData;
+      const $element = $(this);
 
+      // Méthode 1: Données directes depuis l'attribut data-recipe
+      if ($element.data("recipe")) {
+        recipeData = $element.data("recipe");
+      }
+      // Méthode 2: Pour les suggestions
+      else if ($element.hasClass("suggestion-item")) {
+        recipeData = $element.data("recette");
+      }
+      // Méthode 3: Fallback avec données visibles
+      else {
+        const card = $element.closest(".card");
+        recipeData = {
+          nom: card.find(".card-title").text(),
+          categorie: card.find(".badge.bg-secondary").text(),
+          temps_preparation: card.find(".badge.bg-light").text().trim(),
+          images: card.find("img").attr("src"),
+          ingredients: [],
+          etapes: [],
+        };
+      }
+
+      // Ouverture du modal (identique pour tous les cas)
       openRecipeModal(recipeData);
-    } catch (e) {
-      console.error("Erreur:", e);
-      // Fallback avec les données visibles de la carte
-      const card = $(this).closest(".card");
-      openRecipeModal({
-        nom: card.find(".card-title").text(),
-        categorie: card.find(".badge.bg-secondary").text(),
-        temps_preparation: card.find(".badge.bg-light").text(),
-        ingredients: [],
-        etapes: [],
-      });
     }
-  });
+  );
 }
 // Initialisation des boutons favoris
 function initFavorisButtons() {
@@ -272,10 +288,6 @@ async function updateMegaMenu() {
           .attr("href", "#")
           .data("recipe", JSON.stringify(completeRecipe))
           .text(completeRecipe.nom)
-          .on("click", (e) => {
-            e.preventDefault();
-            openRecipeModal(completeRecipe);
-          })
       );
     });
   } catch (error) {
@@ -405,30 +417,63 @@ function openRecipeModal(recipe) {
 
 // Modification de initViewRecipeButtons()
 function initViewRecipeButtons() {
-  $(document).on("click", ".btn-voir-recette", function () {
-    try {
-      let recipeData;
-      const rawData = $(this).data("recipe");
+  $(document).on(
+    "click",
+    ".btn-voir-recette, [data-recipe], .suggestion-item, #favorites-list .list-group-item",
+    function (e) {
+      e.preventDefault();
+      try {
+        const $element = $(this);
+        let recipeData;
 
-      // Gestion des deux formats de données (string ou déjà parsé)
-      if (typeof rawData === "string") {
-        recipeData = JSON.parse(rawData);
-      } else {
-        recipeData = rawData;
+        if ($element.parent().attr("id") === "favorites-list") {
+          recipeData = $element.data("recipe");
+        }
+
+        const rawData = $(this).data("recipe");
+
+        // Gestion des deux formats de données (string ou déjà parsé)
+        if (typeof rawData === "string") {
+          recipeData = JSON.parse(rawData);
+        } else {
+          recipeData = rawData;
+        }
+
+        console.log("Data recette:", recipeData);
+        openRecipeModal(recipeData);
+      } catch (e) {
+        console.error("Erreur d'ouverture de la recette:", e);
+        const card = $(this).closest(".card");
+        openRecipeModal({
+          nom: card.find(".card-title").text(),
+          categorie: card.find(".badge.bg-secondary").text(),
+          temps_preparation: card.find(".badge.bg-light").text(),
+          ingredients: [],
+          etapes: [],
+        });
       }
-
-      console.log("Data recette:", recipeData);
-      openRecipeModal(recipeData);
-    } catch (e) {
-      console.error("Erreur parsing:", e);
-      const card = $(this).closest(".card");
-      openRecipeModal({
-        nom: card.find(".card-title").text(),
-        categorie: card.find(".badge.bg-secondary").text(),
-        temps_preparation: card.find(".badge.bg-light").text(),
-        ingredients: [],
-        etapes: [],
-      });
     }
-  });
+  );
 }
+$("#recipeModal").on("hidden.bs.modal", function () {
+  // Supprime manuellement le backdrop si encore présent
+  $(".modal-backdrop").remove();
+  $("body").removeClass("modal-open");
+  $("body").css("padding-right", ""); // corrige le scroll lock éventuel
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const modalEl = document.getElementById("recipeModal");
+
+  modalEl.addEventListener("hidden.bs.modal", function () {
+    console.log("Modal fermé : nettoyage en cours");
+
+    // Force la suppression du backdrop s'il est encore là
+    const backdrops = document.querySelectorAll(".modal-backdrop");
+    backdrops.forEach((el) => el.remove());
+
+    // Enlève le scroll lock du body si Bootstrap ne le fait pas
+    document.body.classList.remove("modal-open");
+    document.body.style.paddingRight = "";
+  });
+});
