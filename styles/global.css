@@ -31,7 +31,7 @@ h4,
   font-weight: 700;
   font-variant: small-caps;
   letter-spacing: 1px;
-  text-transform: lowercase; /* Convertit en petites capitales */
+  text-transform: lowercase;
 }
 
 /* ================================
@@ -94,10 +94,6 @@ h3 {
   font-size: 1.5rem;
   color: #db6327;
 }
-
-/* Importation des polices */
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
-@import url("https://use.typekit.net/lqe4gxu.css");
 
 /* ================================
    STYLE GLOBAL
@@ -492,7 +488,3 @@ h3 {
     height: 2rem;
   }
 }
-
-/* ================================
-   FIN DU CSS
-================================= */
