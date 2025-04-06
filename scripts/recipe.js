@@ -1,6 +1,6 @@
 // Configuration du chemin de base
 const BASE_PATH = window.location.pathname.toLowerCase().includes("happymeal")
-  ? "/happyMeal/"
+  ? "/happymeal/"
   : "/";
 console.log("BASE_PATH vérifié:", BASE_PATH);
 
