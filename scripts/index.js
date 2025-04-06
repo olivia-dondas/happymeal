@@ -455,3 +455,25 @@ function initViewRecipeButtons() {
     }
   );
 }
+$("#recipeModal").on("hidden.bs.modal", function () {
+  // Supprime manuellement le backdrop si encore présent
+  $(".modal-backdrop").remove();
+  $("body").removeClass("modal-open");
+  $("body").css("padding-right", ""); // corrige le scroll lock éventuel
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const modalEl = document.getElementById("recipeModal");
+
+  modalEl.addEventListener("hidden.bs.modal", function () {
+    console.log("Modal fermé : nettoyage en cours");
+
+    // Force la suppression du backdrop s'il est encore là
+    const backdrops = document.querySelectorAll(".modal-backdrop");
+    backdrops.forEach((el) => el.remove());
+
+    // Enlève le scroll lock du body si Bootstrap ne le fait pas
+    document.body.classList.remove("modal-open");
+    document.body.style.paddingRight = "";
+  });
+});
