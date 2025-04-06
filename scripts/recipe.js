@@ -48,7 +48,7 @@ function displayRecipeCards(recipes) {
       const isFavori = favoris.some((f) => f.nom === recipe.nom);
 
       return `
-      <div class="col-md-4 mb-4">
+      <div class="recipe-card col-12 col-sm-6 col-md-4 mb-4">
         <div class="card h-100">
           <img src="${BASE_PATH}${recipe.images}" class="card-img-top" alt="${
         recipe.nom
@@ -79,6 +79,10 @@ function displayRecipeCards(recipes) {
       `;
     })
   );
+}
+
+if (typeof displayRecipes === "function") {
+  displayRecipes();
 }
 
 // ==================== GESTION DES MODALS ====================
