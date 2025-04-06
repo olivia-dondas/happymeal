@@ -1,5 +1,5 @@
 // Configuration du chemin de base
-const BASE_PATH = window.location.pathname.includes("happyMeal")
+const BASE_PATH = window.location.pathname.includes("happymeal")
   ? "/happymeal/"
   : "/";
 
