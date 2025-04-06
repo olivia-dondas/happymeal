@@ -1,7 +1,7 @@
 // Configuration du chemin de base
-const BASE_PATH = window.location.pathname.toLowerCase().includes("happymeal")
-  ? "/happymeal/"
-  : "/";
+const pathParts = window.location.pathname.split("/");
+const baseIndex = pathParts.indexOf("happymeal");
+const BASE_PATH = baseIndex !== -1 ? "/" + pathParts[baseIndex] + "/" : "/";
 console.log("BASE_PATH vérifié:", BASE_PATH);
 
 // ==================== FONCTIONS UTILITAIRES ====================
@@ -20,7 +20,7 @@ function showError(msg, selector = "#recipe-cards-container") {
 // ==================== GESTION DES DONNÉES ====================
 async function fetchRecipes() {
   try {
-    const response = await fetch(`${BASE_PATH}data/data.json`);
+    const response = await fetch("/happymeal/data/data.json"); // chemin ABSOLU depuis la racine du domaine
     if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
     return await response.json();
   } catch (error) {
