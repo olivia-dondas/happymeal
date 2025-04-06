@@ -189,11 +189,12 @@ h3 {
 }
 
 /* ============ MENU DÉROULANT ============ */
-.navbar-dark .dropdown-menu {
+.navbar-dark + .dropdown-menu {
   background: #ffffff !important;
   border: 2px solid #db6327 !important;
   margin-top: 0 !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding-top: 0 !important;
 }
 
 .dropdown-item {
@@ -215,6 +216,23 @@ h3 {
   border-bottom: 1px solid #eee !important;
 }
 
+.mega-menu-col {
+  display: flex;
+  align-items: center;
+  margin: 0 1rem;
+  padding: 0.5rem 0;
+}
+
+.mega-menu {
+  display: grid;
+  align-items: center; /* Centrer verticalement les éléments */
+}
+
+.mega-menu .mega-menu-col:first-child {
+  padding-top: 0;
+  margin-top: 0;
+  align-self: flex-start; /* Permet de s'assurer que le premier élément commence en haut */
+}
 /* ============ HARMONISATION DES SECTIONS ============ */
 #recipes-list {
   background-color: transparent !important;
