@@ -4,28 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CookIt - Click. Cook. Eat</title>
-    <link rel="stylesheet" href="../styles/global.css" />
-    <link rel="stylesheet" href="../styles/favorites.css" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      defer
-    ></script>
-    <script src="../scripts/favorites.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/grocery.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     />
-
     <link
       rel="icon"
       type="image/x-icon"
       href="../assets/Logos_CookIt/Logo_CookIt-favicon-CookIt.png"
     />
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+    
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script type="module" src="../scripts/recipe.js"></script>
+    <script src="../scripts/grocery.js" defer></script>
+    
   </head>
 
   <body>
+    <!-- HEADER -->
     <header class="header bg-dark p-3">
       <div class="d-flex align-items-center">
         <a href="../index.html">
@@ -33,12 +40,15 @@
             class="logo-header"
             src="../assets/Logos_CookIt/Logo_CookIt-1-CookIt-Color.png"
             alt="CookIt Logo"
-        /></a>
+          />
+        </a>
         <div class="header-content ms-3">
           <h2>CLICK · COOK · EAT</h2>
         </div>
       </div>
     </header>
+
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
       <div class="container-fluid">
         <button
@@ -54,7 +64,8 @@
         </button>
 
         <!-- Contenu du menu -->
-        <div class="collapse navbar-collapse text-light" id="navbarContent">
+
+        <div class="collapse navbar-collapse" id="navbarContent">
           <ul class="navbar-nav me-auto">
             <li class="nav-item dropdown">
               <a
@@ -70,11 +81,12 @@
               <!-- Menu dropdown -->
               <ul
                 class="dropdown-menu w-100 vw-100 position-absolute mt-0 start-0"
+                aria-labelledby="navbarDropdown"
                 style="border-top-left-radius: 0; border-top-right-radius: 0"
               >
                 <div class="container">
                   <div class="row">
-                    <!-- Colonne 1 : Recettes -->
+                    <!--Première colonne-->
                     <div class="col-md-3 col-lg-3 mb-3 mb-lg-0">
                       <div class="list-group list-group-flush" id="recipe">
                         <div id="recipes-list"></div>
@@ -83,11 +95,10 @@
 
                     <!-- Colonne 2 : Recettes favorites -->
                     <div class="col-md-3 col-lg-3 mb-3 mb-lg-0">
-                      <div
-                        id="favorites-list"
-                        class="list-group list-group-flush"
-                      >
-                    
+                        <div
+                          id="favorites-list"
+                          class-="list-group list-group-flush"
+                        >
                           <!--Les favoris sont affichés ici dynamiquement-->
                           <div class="list-group-item text-muted">
                             Aucune recette favorite
@@ -95,29 +106,41 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- Vous pouvez ajouter d'autres colonnes ici si besoin -->
-                  </div>
-                </div>
               </ul>
             </li>
+            
             <li class="nav-item">
-              <a class="nav-link" href="#">Liste de courses</a>
+              <a class="nav-link" href="grocery.html">Liste de courses</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Planifier ses repas</a>
+              <a class="nav-link" href="planner.html">Planifier ses repas</a>
+            </li>
+            <li class="autocomplete">
+              <input type="text" id="search" placeholder="Tapez un plat..." />
+              <div id="suggestions" class="autocomplete-items"></div>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <main class="main">
-      <h1>Mes Favoris</h1>
-      <div id="favorisContainer"></div>
-    </main>
+
+    <h2>Liste de courses</h2>
+    <ul id="shopping-list" class="list-group mb-3"></ul>
+    <button id="generate-pdf" class="btn btn-primary">
+      Générer la liste en PDF
+    </button>
+    <button id="clear-list" class="btn btn-danger">Supprimer la liste</button>
+  </div>
+    <div class="container my-5">
+        <h2>Ingrédients disponibles</h2>
+        <div class="ingredient-list"></div>
+       
+  
+   
+    <!-- FOOTER -->
     <footer class="footer fixed-bottom bg-dark">
-      <p class="text-light text-center">
-        &copy; 2023 CookIt. Tous droits reservés.
+      <p class="text-light text-center m-0 py-2">
+        &copy; 2025 CookIt. Tous droits réservés.
       </p>
     </footer>
   </body>
