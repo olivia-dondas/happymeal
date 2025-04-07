@@ -246,7 +246,7 @@ async function updateMegaMenu() {
     const $recipesList = $("#recipes-list").empty();
     $recipesList.append(
       $('<a class="list-group-item text-uppercase fw-bold"></a>')
-        .attr("href", `${BASE_PATH}pages/recipes.html`)
+        .attr("href", `${BASE_PATH}pages/recipe.html`)
         .text("Toutes les recettes")
     );
 
