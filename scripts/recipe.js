@@ -39,6 +39,142 @@ function displayRecipeCards(recipes) {
     return $container.html(
       '<div class="alert alert-info">Aucune recette disponible</div>'
     );
+
+  }
+  container.innerHTML = "";
+
+  const startIndex = (currentPage - 1) * recipesPerPage;
+  const endIndex = startIndex + recipesPerPage;
+  const recipesToDisplay = allRecipes.slice(startIndex, endIndex);
+
+  recipesToDisplay.forEach((recipe, index) => {
+    const card = document.createElement("div");
+    card.className = "col-md-4 mb-4";
+    card.innerHTML = `
+      <div class="card recipe-card" data-index="${index}">
+        <img src="${recipe.images}" class="card-img-top" alt="${recipe.nom}">
+        <div class="card-body">
+          <h5 class="card-title">${recipe.nom}</h5>
+          <p class="card-text">Catégorie: ${recipe.categorie}</p>
+          <p class="card-text">Temps: ${recipe.temps_preparation}</p>
+          <button class="btn btn-primary voir-plus-btn">Voir la recette</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  updatePaginationControls();
+  setupVoirPlusButtons();
+}
+
+function updatePaginationControls() {
+  const paginationContainer = document.getElementById("pagination-controls");
+  if (!paginationContainer) {
+    console.error("Le conteneur pagination-controls n'existe pas");
+    return;
+  }
+  paginationContainer.innerHTML = "";
+
+  const totalPages = Math.ceil(allRecipes.length / recipesPerPage);
+
+  const prevButton = document.createElement("button");
+  prevButton.textContent = "Précédent";
+  prevButton.className = "btn btn-secondary me-2";
+  prevButton.disabled = currentPage === 1;
+  prevButton.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPaginatedRecipes();
+    }
+  });
+
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Suivant";
+  nextButton.className = "btn btn-secondary";
+  nextButton.disabled = currentPage === totalPages;
+  nextButton.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      displayPaginatedRecipes();
+    }
+  });
+
+  paginationContainer.appendChild(prevButton);
+  paginationContainer.appendChild(nextButton);
+}
+
+function setupVoirPlusButtons() {
+  document.querySelectorAll(".voir-plus-btn").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const card = event.target.closest(".recipe-card");
+      const index = card.dataset.index;
+      const recipe = allRecipes[index];
+
+      if (recipe) {
+        openModal(recipe);
+      }
+    });
+  });
+}
+
+function openModal(recipe) {
+  const modal = document.getElementById("recipeModal");
+  const modalTitle = document.getElementById("recipeTitle");
+  const modalImage = document.getElementById("recipeImage");
+  const modalCategory = document.getElementById("recipeCategory");
+  const modalTime = document.getElementById("recipeTime");
+  const modalIngredients = document.getElementById("recipeIngredients");
+  const modalSteps = document.getElementById("recipeSteps");
+
+  // Remplir les données du modal
+  modalTitle.textContent = recipe.nom;
+  modalImage.src = recipe.images;
+  modalCategory.textContent = recipe.categorie;
+  modalTime.textContent = recipe.temps_preparation;
+
+  // Liste des ingrédients
+  modalIngredients.innerHTML = "";
+  recipe.ingredients.forEach((ingredient) => {
+    const li = document.createElement("li");
+    li.textContent = `${ingredient.nom} - ${ingredient.quantite}`;
+    modalIngredients.appendChild(li);
+  });
+
+  // Étapes de la recette
+  modalSteps.innerHTML = "";
+  recipe.etapes.forEach((etape) => {
+    const li = document.createElement("li");
+    li.textContent = etape;
+    modalSteps.appendChild(li);
+  });
+
+  // Afficher le modal
+  modal.style.display = "block";
+}
+
+// Fermer le modal
+document.querySelector(".close").addEventListener("click", () => {
+  document.getElementById("recipeModal").style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+  const modal = document.getElementById("recipeModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+async function loadRecipes() {
+  try {
+    const response = await fetch("../data/data.json");
+    if (!response.ok)
+      throw new Error("Erreur lors du chargement du fichier JSON");
+    const data = await response.json();
+    allRecipes = data.recettes || [];
+    displayPaginatedRecipes();
+  } catch (error) {
+    console.error("Erreur lors du chargement des recettes :", error);
   }
 
   const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
@@ -246,7 +382,7 @@ async function updateMegaMenu() {
     const $recipesList = $("#recipes-list").empty();
     $recipesList.append(
       $('<a class="list-group-item text-uppercase fw-bold"></a>')
-        .attr("href", `${BASE_PATH}pages/recipes.html`)
+        .attr("href", `${BASE_PATH}pages/recipe.html`)
         .text("Toutes les recettes")
     );
 
