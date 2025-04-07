@@ -327,3 +327,18 @@ initApp();
 });
 const favoris = JSON.parse(localStorage.getItem("favoris") || []);
 console.log("Favoris dans le localStorage:", favoris);
+
+$(document).on("click", "#addToGroceryList", function () {
+  const ingredients = $("#recipeIngredients li").map(function () {
+    return $(this).text().trim();
+  }).get();
+
+  if (ingredients.length > 0) {
+    const existingList = JSON.parse(localStorage.getItem("groceryList")) || [];
+    const updatedList = [...new Set([...existingList, ...ingredients])]; // Évite les doublons
+    localStorage.setItem("groceryList", JSON.stringify(updatedList));
+    alert("Les ingrédients ont été ajoutés à votre liste de courses !");
+  } else {
+    alert("Aucun ingrédient à ajouter !");
+  }
+});
