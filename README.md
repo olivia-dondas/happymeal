@@ -33,7 +33,7 @@ Happy Meal est une application web qui simplifie la cuisine en proposant des rec
    - Ouvrir `index.html` directement.
    - Ou utiliser un serveur local comme Live Server.
 3. **Hébergement sur Plesk** :
-   - Déployer les fichiers sur votre espace Plesk.
+   - Déployer les fichiers sur votre espace Plesk. https://olivia-dondas.students-laplateforme.io/happymeal/index.html
    - Assurez-vous que le fichier JSON est bien accessible.
 
 ## Collaboration
