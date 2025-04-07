@@ -1,0 +1,20 @@
+.ingredient-list {
+    margin-bottom: 20px;
+  }
+  
+  .ingredient-list div {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .ingredient-list div:hover {
+    background-color: #f1f1f1;
+  }
+  
+  #shopping-list {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
