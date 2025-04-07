@@ -27,51 +27,56 @@ throw error;
 }
 // ==================== AFFICHAGE DES RECETTES ====================
 function displayRecipeCards(recipes) {
-const $container = $("#recipe-cards-container");
-$container.empty();
-if (!recipes || recipes.length === 0) {
-return $container.html(
-'<div class="alert alert-info">Aucune recette disponible</div>'
-);
-}
-const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-$container.append(
-recipes.map((recipe, index) => {
-const isFavori = favoris.some((f) => f.nom === recipe.nom);
-return `
-<div class="recipe-card col-12 col-sm-6 col-md-4 mb-4">
-<div class="card h-100">
-<img src="${BASE_PATH}${recipe.images}" class="card-img-top" alt="${
-recipe.nom
-}" style="height: 200px; object-fit: cover;">
+  const $container = $("#recipe-cards-container");
+  $container.empty();
 
-<div class="card-body">
-<h5 class="card-title">${recipe.nom}</h5>
-<div class="d-flex gap-2 mb-2">
-<span class="badge bg-secondary">${recipe.categorie}</span>
-<span class="badge bg-light text-dark">${
-recipe.temps_preparation
-}</span>
-</div>
-<div class="d-flex justify-content-between align-items-center">
-<button class="btn btn-primary btn-view-recipe" data-recipe-id="${index}">
-Voir la recette <i class="bi bi-arrow-right"></i>
-</button>
-<button class="btn-favorite ${isFavori ? "active" : ""}"
-data-recipe-id="${index}"
-aria-label="${
-isFavori ? "Retirer des favoris" : "Ajouter aux favoris"
-}">
-${isFavori ? "♥" : "♡"}
-</button>
-</div>
-</div>
-</div>
-</div>
-`;
-})
-);
+  if (!recipes || recipes.length === 0) {
+    return $container.html(
+      '<div class="alert alert-info">Aucune recette disponible</div>'
+    );
+  }
+
+  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+
+  $container.append(
+    recipes.map((recipe, index) => {
+      const isFavori = favoris.some((f) => f.nom === recipe.nom);
+
+      return `
+      <div class="recipe-card col-12 col-sm-6 col-md-4 mb-4">
+        <div class="card h-100">
+          <img src="${BASE_PATH}${recipe.images}" class="card-img-top" alt="${
+        recipe.nom
+      }" style="height: 200px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">${recipe.nom}</h5>
+            <div class="d-flex gap-2 mb-2">
+              <span class="badge bg-secondary">${recipe.categorie}</span>
+              <span class="badge bg-light text-dark">${
+                recipe.temps_preparation
+              }</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <button class="btn btn-primary btn-view-recipe" data-recipe-id="${index}">
+                Voir la recette <i class="bi bi-arrow-right"></i>
+              </button>
+              <button class="btn-favorite ${isFavori ? "active" : ""}" 
+                      data-recipe-id="${index}"
+                      aria-label="${
+                        isFavori ? "Retirer des favoris" : "Ajouter aux favoris"
+                      }">
+                ${isFavori ? "♥" : "♡"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+    })
+  );
 }
+
+
 if (typeof displayRecipes === "function") {
 displayRecipes();
 }
