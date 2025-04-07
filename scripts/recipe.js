@@ -1,7 +1,7 @@
 // Configuration du chemin de base
-const BASE_PATH = window.location.pathname.toLowerCase().includes("happymeal")
-  ? "/happymeal/"
-  : "/";
+const pathParts = window.location.pathname.split("/");
+const baseIndex = pathParts.indexOf("happymeal");
+const BASE_PATH = baseIndex !== -1 ? "/" + pathParts[baseIndex] + "/" : "/";
 console.log("BASE_PATH vérifié:", BASE_PATH);
 
 // ==================== FONCTIONS UTILITAIRES ====================
@@ -20,7 +20,7 @@ function showError(msg, selector = "#recipe-cards-container") {
 // ==================== GESTION DES DONNÉES ====================
 async function fetchRecipes() {
   try {
-    const response = await fetch(`${BASE_PATH}data/data.json`);
+    const response = await fetch("/happymeal/data/data.json"); // chemin ABSOLU depuis la racine du domaine
     if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -48,7 +48,7 @@ function displayRecipeCards(recipes) {
       const isFavori = favoris.some((f) => f.nom === recipe.nom);
 
       return `
-      <div class="col-md-4 mb-4">
+      <div class="recipe-card col-12 col-sm-6 col-md-4 mb-4">
         <div class="card h-100">
           <img src="${BASE_PATH}${recipe.images}" class="card-img-top" alt="${
         recipe.nom
@@ -79,6 +79,10 @@ function displayRecipeCards(recipes) {
       `;
     })
   );
+}
+
+if (typeof displayRecipes === "function") {
+  displayRecipes();
 }
 
 // ==================== GESTION DES MODALS ====================
@@ -242,7 +246,7 @@ async function updateMegaMenu() {
     const $recipesList = $("#recipes-list").empty();
     $recipesList.append(
       $('<a class="list-group-item text-uppercase fw-bold"></a>')
-        .attr("href", `${BASE_PATH}pages/recipes.html`)
+        .attr("href", `${BASE_PATH}pages/recipe.html`)
         .text("Toutes les recettes")
     );
 
