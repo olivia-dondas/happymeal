@@ -27,13 +27,13 @@ Happy Meal est une application web qui simplifie la cuisine en proposant des rec
 ## Installation
 1. **Cloner le dépôt GitHub** :
    ```sh
-   git clone https://github.com/olivia-dondas/happyMeal.git
+   git clone https://github.com/olivia-dondas/happymeal.git
    ```
 2. **Ouvrir le projet dans un navigateur** :
    - Ouvrir `index.html` directement.
    - Ou utiliser un serveur local comme Live Server.
 3. **Hébergement sur Plesk** :
-   - Déployer les fichiers sur votre espace Plesk.
+   - Déployer les fichiers sur votre espace Plesk. https://olivia-dondas.students-laplateforme.io/happymeal/index.html
    - Assurez-vous que le fichier JSON est bien accessible.
 
 ## Collaboration
